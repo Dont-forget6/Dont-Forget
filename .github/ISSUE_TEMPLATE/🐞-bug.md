@@ -1,7 +1,7 @@
 ---
 name: "\U0001F41E Bug"
 about: Bug Report를 작성해주세요.
-title: "[Bug]"
+title: "[Bug] "
 labels: bug
 assignees: ''
 
