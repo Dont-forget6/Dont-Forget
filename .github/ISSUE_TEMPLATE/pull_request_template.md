@@ -1,10 +1,11 @@
 ## 🔎 What type of PR is this? (check all applicable)
 
 - [ ] Feature
-- [ ] Refactor
 - [ ] Bug Fix
+- [ ] Refactor
 - [ ] Optimization
 - [ ] Documentation Update
+- [ ] Other... Please describe:
 
 ## 🐥 What need this change? 
 
