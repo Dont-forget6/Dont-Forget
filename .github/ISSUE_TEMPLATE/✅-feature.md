@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-## Description
+## ✅ Description
 해당 기능의 설명을 작성해주세요.
 
-## TODO
+## ✔️ TODO
 - [ ] todo
 - [ ] todo
 
