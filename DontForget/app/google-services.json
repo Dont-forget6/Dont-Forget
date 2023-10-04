@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "561123472766",
+    "firebase_url": "https://dont-forget-9b382-default-rtdb.firebaseio.com",
+    "project_id": "dont-forget-9b382",
+    "storage_bucket": "dont-forget-9b382.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561123472766:android:5d9fd1d34edb10d113af2f",
+        "android_client_info": {
+          "package_name": "com.test.dontforget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561123472766-689e01sshkntcdmhh4dupua2nliooprb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.test.dontforget",
+            "certificate_hash": "9da35660d11a8d01c8edbc539387552695c31b16"
+          }
+        },
+        {
+          "client_id": "561123472766-mbv9feq0kb3g0n7bjb5422jdici0f9bv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAlV5OmdTR7vIML3JBcbvoW66Huo11p9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561123472766-mbv9feq0kb3g0n7bjb5422jdici0f9bv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
