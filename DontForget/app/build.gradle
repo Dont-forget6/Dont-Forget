@@ -95,5 +95,8 @@ dependencies {
     // geofencing
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
+    // 원형 이미지 뷰
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
 }
