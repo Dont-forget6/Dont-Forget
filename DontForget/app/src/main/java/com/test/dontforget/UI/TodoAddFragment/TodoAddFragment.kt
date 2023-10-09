@@ -117,6 +117,8 @@ class TodoAddFragment : Fragment() {
                     cardviewTodoAddCategory.setCardBackgroundColor(it.toInt())
                     textInputLayoutTodoAdd.boxStrokeColor = it.toInt()
                     textInputLayoutTodoAdd.hintTextColor = ColorStateList.valueOf(it.toInt())
+                    textInputLayoutTodoAddMemo.boxStrokeColor = it.toInt()
+                    textInputLayoutTodoAddMemo.hintTextColor = ColorStateList.valueOf(it.toInt())
                 }
             }
             viewModel.fontColor.observe(mainActivity){
