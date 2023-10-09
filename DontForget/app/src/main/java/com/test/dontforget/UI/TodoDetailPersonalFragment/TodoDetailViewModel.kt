@@ -19,6 +19,7 @@ class TodoDetailViewModel : ViewModel() {
     var todoLocationName = MutableLiveData<String>()
     var todoLocationLatitude = MutableLiveData<String>()
     var todoLocationLongitude = MutableLiveData<String>()
+    var todoMemo = MutableLiveData<String>()
     var todoOwnerIdx = MutableLiveData<Long>()
     var todoOwnerName = MutableLiveData<String>()
 
@@ -37,6 +38,7 @@ class TodoDetailViewModel : ViewModel() {
                 todoLocationName.value = c1.child("todoLocationName").value as String
                 todoLocationLatitude.value = c1.child("todoLocationLatitude").value as String
                 todoLocationLongitude.value = c1.child("todoLocationLongitude").value as String
+                todoMemo.value = c1.child("todoMemo").value as String
                 todoOwnerIdx.value = c1.child("todoOwnerIdx").value as Long
                 todoOwnerName.value = c1.child("todoOwnerName").value as String
             }

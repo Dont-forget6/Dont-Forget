@@ -134,6 +134,7 @@ class MainHomeViewModel : ViewModel() {
                 var todoLocationName = c1.child("todoLocationName").value as String
                 var todoLocationLatitude = c1.child("todoLocationLatitude").value as String
                 var todoLocationLongitude = c1.child("todoLocationLongitude").value as String
+                var todoMemo = c1.child("todoMemo").value as String
                 var todoOwnerIdx = c1.child("todoOwnerIdx").value as Long
                 var todoOwnerName = c1.child("todoOwnerName").value as String
 
@@ -152,6 +153,7 @@ class MainHomeViewModel : ViewModel() {
                     todoLocationName,
                     todoLocationLatitude,
                     todoLocationLongitude,
+                    todoMemo,
                     todoOwnerIdx,
                     todoOwnerName
                 )
@@ -179,6 +181,7 @@ class MainHomeViewModel : ViewModel() {
                 var todoLocationName = c1.child("todoLocationName").value as String
                 var todoLocationLatitude = c1.child("todoLocationLatitude").value as String
                 var todoLocationLongitude = c1.child("todoLocationLongitude").value as String
+                var todoMemo = c1.child("todoMemo").value as String
                 var todoOwnerIdx = c1.child("todoOwnerIdx").value as Long
                 var todoOwnerName = c1.child("todoOwnerName").value as String
 
@@ -197,6 +200,7 @@ class MainHomeViewModel : ViewModel() {
                     todoLocationName,
                     todoLocationLatitude,
                     todoLocationLongitude,
+                    todoMemo,
                     todoOwnerIdx,
                     todoOwnerName
                 )

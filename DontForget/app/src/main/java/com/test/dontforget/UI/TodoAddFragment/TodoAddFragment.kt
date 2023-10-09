@@ -355,6 +355,7 @@ class TodoAddFragment : Fragment() {
                         var backgroundColor = MyApplication.categoryColor
                         var fontColor = MyApplication.categoryFontColor
                         var dates = newDate
+                        var memo = editTextTodoAddMemo.text.toString()
 
                         //알림, 장소 이름,위도,경도 없을시
                         var time = newTime
@@ -418,7 +419,7 @@ class TodoAddFragment : Fragment() {
                                     //개인 카테고리 추가시
                                     if(newPublicdata == 0){
                                         var newclass = TodoClass(idx, content, 0, catgoryIdx, name, fontColor.toLong(), backgroundColor.toLong(), dates,
-                                            time, locationName, locationLatitude, locationLongtitude, owneridx, ownerName)
+                                            time, locationName, locationLatitude, locationLongtitude, memo, owneridx, ownerName)
                                         TodoRepository.setTodoAddInfo(newclass){
                                             TodoRepository.setTodoIdx(idx){
                                                 Toast.makeText(mainActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()
@@ -431,7 +432,7 @@ class TodoAddFragment : Fragment() {
                                     //공용 카데고리 추가시
                                     if(newPublicdata == 1){
                                         var newclass = TodoClass(idx, content, 0, catgoryIdx, name, fontColor.toLong(), backgroundColor.toLong(), dates,
-                                            time, locationName, locationLatitude, locationLongtitude, owneridx, ownerName)
+                                            time, locationName, locationLatitude, locationLongtitude, memo, owneridx, ownerName)
                                         TodoRepository.setTodoAddInfo(newclass) {
                                             TodoRepository.setTodoIdx(idx) {
                                                 var text = "${names}에 ${myDate} 새 할일이 추가되었습니다"
