@@ -21,28 +21,33 @@
         <item name="android:gravity">center</item>
         <item name="titleCentered">true</item>
     </style>
+
     <style name="Theme.DontForget.Button" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/scdream_regular</item>
     </style>
 
     <style name="Theme.DontForget.CardView">
-        <item name = "cardCornerRadius"> 10dp </item>
-        <item name= "contentPadding">@dimen/padding_size_normal</item>
-        <item name= "cardBackgroundColor">#00FFFFFF</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="contentPadding">@dimen/padding_size_normal</item>
+        <item name="cardBackgroundColor">#00FFFFFF</item>
     </style>
+
     <style name="Theme.DontForget.CardView_noPadding">
-        <item name = "cardCornerRadius"> 10dp </item>
-        <item name= "cardBackgroundColor">#00FFFFFF</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="cardBackgroundColor">#00FFFFFF</item>
     </style>
+
     <style name="Theme.DontForget.CardView_Padding8">
-        <item name = "cardCornerRadius"> 10dp </item>
-        <item name= "contentPadding">@dimen/margin_vertical_small2</item>
-        <item name= "cardBackgroundColor">#00FFFFFF</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="contentPadding">@dimen/margin_vertical_small2</item>
+        <item name="cardBackgroundColor">#00FFFFFF</item>
     </style>
+
     <style name="Theme.DontForget.Text">
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="Theme.DontForget" parent="Base.Theme.DontForget" />
 
     <!--바텀 네비게이션 item text-->
@@ -76,5 +81,20 @@
     <!--캘린더-->
     <style name="Theme.DontForget.Calendar" parent="Widget.Material3.MaterialCalendar">
         <item name="background">@color/accentGray</item>
+    </style>
+
+    <style name="Theme.DontForget.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <!-- Radius of the outer bound of widgets to make the rounded corners -->
+        <item name="appWidgetRadius">16dp</item>
+        <!--
+        Radius of the inner view's bound of widgets to make the rounded corners.
+        It needs to be 8dp or less than the value of appWidgetRadius
+        -->
+        <item name="appWidgetInnerRadius">8dp</item>
+    </style>
+
+    <style name="Theme.DontForget.AppWidgetContainer" parent="Theme.DontForget.AppWidgetContainerParent">
+        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
+        <item name="appWidgetPadding">16dp</item>
     </style>
 </resources>
