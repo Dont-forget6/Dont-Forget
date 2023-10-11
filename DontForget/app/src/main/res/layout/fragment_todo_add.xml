@@ -26,7 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/todo_add_hint"
-            app:boxBackgroundMode="filled">
+            app:boxBackgroundMode="filled"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText_todoAdd"
@@ -252,6 +253,61 @@
                 android:text="@string/todo_location_empty"
                 android:textSize="@dimen/font_size_medium" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_todoAdd_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_vertical_small1"
+                style="@style/Theme.DontForget.CardView"
+                android:layout_gravity="center">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Theme.DontForget.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/scdream_regular"
+                        android:text="@string/todo_memo"
+                        android:textSize="@dimen/font_size_medium">
+
+                    </TextView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_todoAdd_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_vertical_small3"
+                android:hint="메모를 입력해주세요"
+                app:boxBackgroundMode="filled"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_todoAdd_memo"
+                    style="@style/Theme.DontForget.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#00FFFFFF"
+                    android:fontFamily="@font/scdream_regular"
+                    android:inputType="text"
+                    android:scrollHorizontally="true"
+                    android:textSize="@dimen/font_size_big" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

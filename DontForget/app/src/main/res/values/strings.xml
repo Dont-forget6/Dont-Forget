@@ -14,6 +14,7 @@
     <string name="todo_date_empty">날짜 없음</string>
     <string name="todo_notification_empty">알림 없음</string>
     <string name="todo_location_empty">위치 없음</string>
+    <string name="todo_memo">메모</string>
     <string name="todo_fiil">작성하기</string>
     <string name="todo_add_hint">추가할 할일을 입력해주세요</string>
 

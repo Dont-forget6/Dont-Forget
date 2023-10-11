@@ -13,6 +13,7 @@ data class TodoClass(
     var todoLocationName: String,
     var todoLocationLatitude: String,
     var todoLocationLongitude: String,
+    var todoMemo: String,
     var todoOwnerIdx: Long,
     var todoOwnerName: String
 )

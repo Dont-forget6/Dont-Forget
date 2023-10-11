@@ -46,7 +46,7 @@ class TodoAddFragmentViewModel :ViewModel(){
                     continue
                 }
                 var datas = TodoClass(idx,"None",0,idx,name,fontcolor,color,"None","None","None","None",
-                    "None",owneridx,ownerName)
+                    "None","None",owneridx,ownerName)
                 templist.add(datas)
                 categoryInfo.value = templist
             }

@@ -331,6 +331,7 @@ class TodoDetailPublicOwnerFragment : Fragment() {
                     locationName,
                     locationLatitude,
                     locationLongitude,
+                    todoDetailViewModel.todoMemo.value!!.toString(),
                     todoDetailViewModel.todoOwnerIdx.value!!.toLong(),
                     todoDetailViewModel.todoOwnerName.value!!.toString()
                 )

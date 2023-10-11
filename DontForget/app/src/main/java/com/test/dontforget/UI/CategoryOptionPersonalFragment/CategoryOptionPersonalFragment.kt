@@ -135,6 +135,7 @@ class CategoryOptionPersonalFragment : Fragment() {
                             categoryTodoList.get(i).todoLocationName,
                             categoryTodoList.get(i).todoLocationLatitude,
                             categoryTodoList.get(i).todoLocationLongitude,
+                            categoryTodoList.get(i).todoMemo,
                             categoryTodoList.get(i).todoOwnerIdx,
                             categoryTodoList.get(i).todoOwnerName
                         )
