@@ -185,6 +185,17 @@
                 android:gravity="end"
                 android:text="서면역"
                 android:textSize="@dimen/font_size_medium" />
+
+            <Button
+                android:id="@+id/button_todoDetailPersonal_route"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_marginLeft="@dimen/margin_vertical_small1"
+                android:drawableLeft="@drawable/ic_route"
+                android:layout_gravity="center"/>
+
+
         </LinearLayout>
 
         <LinearLayout
