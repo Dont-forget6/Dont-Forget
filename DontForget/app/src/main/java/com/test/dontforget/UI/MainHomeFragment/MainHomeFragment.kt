@@ -32,6 +32,7 @@ import com.test.dontforget.databinding.RowHomeCategoryTabBinding
 import com.test.dontforget.databinding.RowHomeMemoSearchBinding
 import com.test.dontforget.databinding.RowHomeTodoBinding
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -343,6 +344,7 @@ class MainHomeFragment : Fragment() {
             val textViewTodo = binding.textViewRowTodo
             val textViewTodoMaker = binding.textViewRowTodoMaker
             val textViewRowTodoLocation = binding.textViewRowTodoLocation
+            val cardViewLocation = binding.cardView
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder =
@@ -396,6 +398,10 @@ class MainHomeFragment : Fragment() {
                 } else {
                     todo.todoLocationName
                 }
+            }
+
+            if (todo.todoLocationName == "위치 없음") {
+                holder.cardViewLocation.visibility = View.GONE
             }
 
             if (todo.todoIsChecked == 0L) {
@@ -468,6 +474,7 @@ class MainHomeFragment : Fragment() {
             val textViewRowMemoSearchMaker = binding.textViewRowMemoSearchMaker
             val textViewRowMemoSearch = binding.textViewRowMemoSearch
             val textViewLocation = binding.textViewRowMemoSearchLocation
+            val cardViewLocation = binding.cardView
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemoSearchHolder =
@@ -504,6 +511,10 @@ class MainHomeFragment : Fragment() {
                 } else {
                     todo.todoLocationName
                 }
+            }
+
+            if (todo.todoLocationName == "위치 없음") {
+                holder.cardViewLocation.visibility = View.GONE
             }
 
             holder.textViewRowMemoSearch.run {
