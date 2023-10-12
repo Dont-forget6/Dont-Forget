@@ -219,27 +219,28 @@
             </com.google.android.material.card.MaterialCardView>
 
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout_todoDetailPersonal_memo"
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_todoDetailPersonal_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical_small1"
+            app:startIconDrawable="@drawable/ic_memo"
+            app:boxBackgroundMode="filled"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_todoDetailPersonal_memo"
+                style="@style/Theme.DontForget.Text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_vertical_small3"
-                android:hint="메모를 입력해주세요"
-                app:boxBackgroundMode="filled"
-                app:endIconMode="clear_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_todoDetailPersonal_memo"
-                    style="@style/Theme.DontForget.Text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#00FFFFFF"
-                    android:fontFamily="@font/scdream_regular"
-                    android:inputType="text"
-                    android:scrollHorizontally="true"
-                    android:textSize="@dimen/font_size_big" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                android:backgroundTint="#00FFFFFF"
+                android:fontFamily="@font/scdream_regular"
+                android:inputType="text"
+                android:scrollHorizontally="true"
+                android:textSize="@dimen/font_size_big" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_marginTop="@dimen/padding_size_normal"
