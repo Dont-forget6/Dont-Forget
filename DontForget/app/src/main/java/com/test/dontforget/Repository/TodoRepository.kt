@@ -49,6 +49,7 @@ class TodoRepository {
                         a1.ref.child("todoLocationLongitude")
                             .setValue(todoDataClass.todoLocationLongitude)
                             .addOnCompleteListener(callback1)
+                        a1.ref.child("todoOwnerName").setValue(todoDataClass.todoOwnerName)
                     }
                 }
         }
@@ -127,6 +128,7 @@ class TodoRepository {
                         a1.ref.child("todoCategoryName").setValue(todoDataClass.todoCategoryName)
                         a1.ref.child("todoBackgroundColor").setValue(todoDataClass.todoBackgroundColor)
                         a1.ref.child("todoFontColor").setValue(todoDataClass.todoFontColor).addOnCompleteListener(callback1)
+                        a1.ref.child("todoOwnerName").setValue(todoDataClass.todoOwnerName)
                     }
                 }
         }

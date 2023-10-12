@@ -21,22 +21,28 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.test.dontforget.DAO.CategoryClass
 import com.test.dontforget.DAO.Friend
+import com.test.dontforget.DAO.JoinFriend
+import com.test.dontforget.DAO.TodoClass
 import com.test.dontforget.DAO.UserClass
 import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
+import com.test.dontforget.Repository.CategoryRepository
+import com.test.dontforget.Repository.JoinFriendRepository
+import com.test.dontforget.Repository.TodoRepository
 import com.test.dontforget.Repository.UserRepository
 import com.test.dontforget.UI.MainMyPageFragment.MyPageModifyViewModel
 import com.test.dontforget.databinding.DialogMypageProfileBinding
 import com.test.dontforget.databinding.FragmentMyPageModifyBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.ArrayList
 
 class MyPageModifyFragment : Fragment() {
     lateinit var fragmentMyPageModifyBinding: FragmentMyPageModifyBinding
@@ -67,6 +73,10 @@ class MyPageModifyFragment : Fragment() {
 
             myPageModifyViewModel = ViewModelProvider(mainActivity)[MyPageModifyViewModel::class.java]
             myPageModifyViewModel.run {
+                userName.observe(mainActivity){
+                    user.userName = it
+                    fragmentMyPageModifyBinding.textInputEditTextMyPageModifyName.setText(it.toString())
+                }
                 userIntoduce.observe(mainActivity){
                     user.userIntroduce = it
                     fragmentMyPageModifyBinding.textInputEditTextMyPageModifyIntroduce.setText(it.toString())
@@ -107,7 +117,7 @@ class MyPageModifyFragment : Fragment() {
             buttonMyPageModifyModifyComplete.setOnClickListener {
                 val newIntroduce =
                     fragmentMyPageModifyBinding.textInputLayoutMyPageModifyIntroduce.editText?.text.toString()
-
+                val newName = fragmentMyPageModifyBinding.textInputLayoutMyPageModifyName.editText?.text.toString()
                 val newImage = when(uploadUri){
                     null -> user.userImage
                     "None".toUri() -> "None"
@@ -119,15 +129,14 @@ class MyPageModifyFragment : Fragment() {
                     UserRepository.setUploadProfile(newImage, uploadUri!!) {}
                 }
 
-                if (newIntroduce.isNotEmpty()) {
+                if ( newName.isNotEmpty()||newIntroduce.isNotEmpty()) {
                     UserRepository.getUserInfoByIdx(MyApplication.loginedUserInfo.userIdx) {
                         for (c1 in it.result.children) {
                             var userIdx = c1.child("userIdx").value as Long
-                            var userName = c1.child("userName").value as String
                             var userEmail = c1.child("userEmail").value as String
                             var userId = c1.child("userId").value as String
                             var userFriendList = mutableListOf<Friend>()
-
+                            var userName = c1.child("userName").value as String
                             var userFriendListHashMap =
                                 c1.child("userFriendList").value as ArrayList<HashMap<String, Any>>
 
@@ -135,14 +144,13 @@ class MyPageModifyFragment : Fragment() {
                                 var idx = i["friendIdx"] as Long
                                 var name = i["friendName"] as String
                                 var email = i["friendEmail"] as String
-
                                 var friend = Friend(idx, name, email)
                                 userFriendList.add(friend)
                             }
 
                             var friendUserClass = UserClass(
                                 userIdx,
-                                userName,
+                                newName,
                                 userEmail,
                                 newImage,
                                 newIntroduce,
@@ -151,6 +159,9 @@ class MyPageModifyFragment : Fragment() {
                             )
 
                             // 수정된 친구정보 반영
+                            CoroutineScope(Dispatchers.Main).launch {
+                                modifyName(userName,newName)
+                            }
                             UserRepository.modifyUserInfo(friendUserClass) {}
                         }
 
@@ -215,6 +226,173 @@ class MyPageModifyFragment : Fragment() {
         }
 
         return albumLauncher
+    }
+
+    suspend fun modifyName(beforeName:String,afterName:String){
+        delay(1000L)
+        lateinit var modifyCategory:CategoryClass
+        // Category Owner 변경
+
+        CategoryRepository.getAllCategory {
+            for (c1 in it.result.children) {
+                val categoryIdx = c1.child("categoryIdx").value as Long
+                val categoryName = c1.child("categoryName").value as String
+                val categoryColor = c1.child("categoryColor").value as Long
+                val categoryFontColor = c1.child("categoryFontColor").value as Long
+                val categoryJoinUserIdxList =
+                    c1.child("categoryJoinUserIdxList").value as ArrayList<Long>?
+                val categoryJoinUserNameList =
+                    c1.child("categoryJoinUserNameList").value as ArrayList<String>?
+                val categoryIsPublic = c1.child("categoryIsPublic").value as Long
+                val categoryOwnerIdx = c1.child("categoryOwnerIdx").value as Long
+                val categoryOwnerName = c1.child("categoryOwnerName").value as String
+                val newCategoryJoinUserNameList = ArrayList<String>()
+                // 카테고리 namelist안에 이름 같은게 잇을경우 변경
+                if (categoryJoinUserNameList != null) {
+                    for( (index,value) in categoryJoinUserNameList.withIndex()){
+                        if(value == beforeName){
+                           newCategoryJoinUserNameList.add(index,afterName)
+                        }else{
+                           newCategoryJoinUserNameList.add(index,value)
+                        }
+                    }
+                }
+                if(categoryOwnerName == beforeName) {
+                    modifyCategory = CategoryClass(
+                        categoryIdx,
+                        categoryName,
+                        categoryColor,
+                        categoryFontColor,
+                        categoryJoinUserIdxList,
+                        newCategoryJoinUserNameList,
+                        categoryIsPublic,
+                        categoryOwnerIdx,
+                        afterName
+                    )
+                }else{
+                    modifyCategory = CategoryClass(
+                        categoryIdx,
+                        categoryName,
+                        categoryColor,
+                        categoryFontColor,
+                        categoryJoinUserIdxList,
+                        newCategoryJoinUserNameList,
+                        categoryIsPublic,
+                        categoryOwnerIdx,
+                        categoryOwnerName
+                    )
+                }
+                CategoryRepository.modifyCategory(modifyCategory){}
+            }
+
+        }
+        // 할일 Owner 변경
+        TodoRepository.getAllTodo {
+            for(c1 in it.result.children){
+                var todoIdx = c1.child("todoIdx").value as Long
+                var todoContent = c1.child("todoContent").value as String
+                var todoIsChecked = c1.child("todoIsChecked").value as Long
+                var todoCategoryIdx = c1.child("todoCategoryIdx").value as Long
+                var todoCategoryName = c1.child("todoCategoryName").value as String
+                var todoFontColor = c1.child("todoFontColor").value as Long
+                var todoBackgroundColor = c1.child("todoBackgroundColor").value as Long
+                var todoDate = c1.child("todoDate").value as String
+                var todoAlertTime = c1.child("todoAlertTime").value as String
+                var todoLocationName = c1.child("todoLocationName").value as String
+                var todoLocationLatitude = c1.child("todoLocationLatitude").value as String
+                var todoLocationLongitude = c1.child("todoLocationLongitude").value as String
+                var todoOwnerIdx = c1.child("todoOwnerIdx").value as Long
+                var todoOwnerName = c1.child("todoOwnerName").value as String
+                if(todoOwnerName == beforeName){
+                    val todo = TodoClass(
+                        todoIdx,
+                        todoContent,
+                        todoIsChecked,
+                        todoCategoryIdx,
+                        todoCategoryName,
+                        todoFontColor,
+                        todoBackgroundColor,
+                        todoDate,
+                        todoAlertTime,
+                        todoLocationName,
+                        todoLocationLatitude,
+                        todoLocationLongitude,
+                        todoOwnerIdx,
+                        afterName
+                    )
+                    Log.e("테스트",todo.toString())
+                    TodoRepository.modifyTodo(todo){}
+                }
+            }
+        }
+
+        // joinFriendInfo joinFriendSenderName변경
+        // joinFriendInfo
+        JoinFriendRepository.getAllJoinFriend {
+            for(c1 in it.result.children){
+                var joinFriendIdx = c1.child("joinFriendIdx").value as Long
+                var joinFriendReceiverEmail = c1.child("joinFriendReceiverEmail").value as String
+                var joinFriendSenderIdx = c1.child("joinFriendSenderIdx").value as Long
+                var joinFriendSenderName = c1.child("joinFriendSenderName").value as String
+                if(joinFriendSenderName == beforeName){
+                    val joinFriend = JoinFriend(
+                        joinFriendIdx,
+                        joinFriendSenderIdx,
+                        afterName,
+                        joinFriendReceiverEmail
+                    )
+                    JoinFriendRepository.modifyJoinFriend(joinFriend)
+                }
+            }
+        }
+
+        // 유저 안에 friendList 변경
+        var myFriendList = MyApplication.loginedUserInfo.userFriendList
+
+        // 사용자의 친구들의 계정을 모두 불러와서 안에들어있는 내정보 삭제
+        for(friend in myFriendList){
+            JoinFriendRepository.getUserInfoByIdx(friend.friendIdx){
+                for (c1 in it.result.children) {
+                    var userIdx = c1.child("userIdx").value as Long
+                    var userName = c1.child("userName").value as String
+                    var userEmail = c1.child("userEmail").value as String
+                    var userImage = c1.child("userImage").value as String
+                    var userIntroduce = c1.child("userIntroduce").value as String
+                    var userId = c1.child("userId").value as String
+                    var userFriendList = mutableListOf<Friend>()
+
+                    var userFriendListHashMap =
+                        c1.child("userFriendList").value as ArrayList<HashMap<String, Any>>
+
+                    for (i in userFriendListHashMap) {
+                        var idx = i["friendIdx"] as Long
+                        var name = i["friendName"] as String
+                        var email = i["friendEmail"] as String
+
+                        var friend = Friend(idx, name, email)
+                        userFriendList.add(friend)
+                    }
+                    for( v in userFriendList){
+                        if(v.friendName == beforeName){
+                            v.friendName = afterName
+                        }
+                    }
+
+                    var friendUserClass = UserClass(
+                        userIdx,
+                        userName,
+                        userEmail,
+                        userImage,
+                        userIntroduce,
+                        userId,
+                        userFriendList as ArrayList<Friend>
+                    )
+
+                    // 수정된 친구정보 반영
+                    UserRepository.modifyUserInfo(friendUserClass){}
+                }
+            }
+        }
     }
 
 }
