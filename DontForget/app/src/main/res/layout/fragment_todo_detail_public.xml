@@ -184,6 +184,51 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearlayout_todoDetailPublic_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_vertical_small1"
+                style="@style/Theme.DontForget.CardView"
+                android:layout_gravity="center">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Theme.DontForget.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/scdream_regular"
+                        android:text="@string/todo_memo"
+                        android:textSize="@dimen/font_size_medium">
+
+                    </TextView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <TextView
+                android:id="@+id/textView_todoDetailPublic_memo"
+                style="@style/Theme.DontForget.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="@font/scdream_regular"
+                android:gravity="end"
+                android:text="메모"
+                android:textSize="@dimen/font_size_medium" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearLayout_todoDetailPublic_madeby"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
