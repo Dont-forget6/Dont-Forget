@@ -105,6 +105,7 @@ class CategoryOptionPublicViewModel() : ViewModel() {
                 val todoLocationName = c1.child("todoLocationName").value as String
                 val todoLocationLatitude = c1.child("todoLocationLatitude").value as String
                 val todoLocationLongitude = c1.child("todoLocationLongitude").value as String
+                val todoMemo = c1.child("todoMemo").value as String
                 val todoOwnerIdx = c1.child("todoOwnerIdx").value as Long
                 val todoOwnerName = c1.child("todoOwnerName").value as String
 
@@ -121,6 +122,7 @@ class CategoryOptionPublicViewModel() : ViewModel() {
                     todoLocationName,
                     todoLocationLatitude,
                     todoLocationLongitude,
+                    todoMemo,
                     todoOwnerIdx,
                     todoOwnerName
                 )

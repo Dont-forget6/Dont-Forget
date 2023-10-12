@@ -48,6 +48,8 @@ class TodoRepository {
                         a1.ref.child("todoIsChecked").setValue(todoDataClass.todoIsChecked)
                         a1.ref.child("todoLocationLongitude")
                             .setValue(todoDataClass.todoLocationLongitude)
+                        a1.ref.child("todoMemo")
+                            .setValue(todoDataClass.todoMemo)
                             .addOnCompleteListener(callback1)
                         a1.ref.child("todoOwnerName").setValue(todoDataClass.todoOwnerName)
                     }

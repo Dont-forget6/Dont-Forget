@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -168,6 +169,9 @@ class TodoDetailPersonalFragment : Fragment() {
                     textInputLayoutTodoDetailPersonal.hintTextColor = ColorStateList.valueOf(it.toInt())
                 }
             }
+            todoMemo.observe(mainActivity) {
+                fragmentTodoDetailPersonalBinding.editTextTodoDetailPersonalMemo.setText(it.toString())
+            }
         }
         todoDetailViewModel.getTodoInfo(todoIdx)
 
@@ -283,6 +287,8 @@ class TodoDetailPersonalFragment : Fragment() {
                 var locationName = placeAddress
                 var locationLatitude = latitude
                 var locationLongitude = longitude
+                var memo = editTextTodoDetailPersonalMemo.text.toString()
+                Log.d("techit", "memo : $memo")
 
                 if(content.isEmpty()) {
                     var dialogNormalBinding = DialogNormalBinding.inflate(layoutInflater)
@@ -332,13 +338,16 @@ class TodoDetailPersonalFragment : Fragment() {
                     locationName,
                     locationLatitude,
                     locationLongitude,
+                    memo,
                     todoDetailViewModel.todoOwnerIdx.value!!.toLong(),
                     todoDetailViewModel.todoOwnerName.value!!.toString()
                 )
 
+                Log.d("techit", "todo : $todoDataClass")
+
                 // 할일 정보 저장
                 TodoRepository.modifyTodo(todoDataClass) {
-
+                    Log.d("techit", "todo 수정 : ${todoDataClass}")
                 }
 
 

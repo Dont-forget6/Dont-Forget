@@ -430,6 +430,7 @@ class MainHomeFragment : Fragment() {
                     todoLocationName = todo.todoLocationName,
                     todoLocationLatitude = todo.todoLocationLatitude,
                     todoLocationLongitude = todo.todoLocationLongitude,
+                    todoMemo = todo.todoMemo,
                     todoOwnerIdx = todo.todoOwnerIdx,
                     todoOwnerName = todo.todoOwnerName
                 )
@@ -550,6 +551,7 @@ class MainHomeFragment : Fragment() {
                     todoLocationName = todo.todoLocationName,
                     todoLocationLatitude = todo.todoLocationLatitude,
                     todoLocationLongitude = todo.todoLocationLongitude,
+                    todoMemo = todo.todoMemo,
                     todoOwnerIdx = todo.todoOwnerIdx,
                     todoOwnerName = todo.todoOwnerName
                 )
