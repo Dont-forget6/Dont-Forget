@@ -3,12 +3,12 @@
     <style name="Widget.DontForgetProject.AppWidget.Container" parent="android:Widget">
         <item name="android:id">@android:id/background</item>
         <item name="android:padding">?attr/appWidgetPadding</item>
-        <item name="android:background">@drawable/app_widget_background</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="Widget.DontForgetProject.AppWidget.InnerView" parent="android:Widget">
-        <item name="android:padding">?attr/appWidgetPadding</item>
-        <item name="android:background">@drawable/app_widget_inner_view_background</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:fontFamily">@font/scdream_light</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

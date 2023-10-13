@@ -1,19 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Widget.DontForgetProject.AppWidget.Container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_size_normal"
     android:theme="@style/Theme.DontForget.AppWidgetContainer">
 
     <TextView
         android:id="@+id/appwidget_text"
-        style="@style/Widget.DontForgetProject.AppWidget.InnerView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
+        android:background="@drawable/background_stroke_circle_white"
         android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
-</RelativeLayout>
+        android:fontFamily="monospace"
+        android:padding="@dimen/padding_size_normal"
+        android:text="오전에 밥먹기"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_medium" />
+</LinearLayout>
