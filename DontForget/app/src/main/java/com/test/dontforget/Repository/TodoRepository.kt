@@ -51,7 +51,10 @@ class TodoRepository {
                         a1.ref.child("todoMemo")
                             .setValue(todoDataClass.todoMemo)
                             .addOnCompleteListener(callback1)
-                        a1.ref.child("todoOwnerName").setValue(todoDataClass.todoOwnerName)
+                        a1.ref.child("todoMemo").setValue(todoDataClass.todoMemo)
+                        a1.ref.child("todoOwnerName")
+                            .setValue(todoDataClass.todoOwnerName)
+                            .addOnCompleteListener(callback1)
                     }
                 }
         }
