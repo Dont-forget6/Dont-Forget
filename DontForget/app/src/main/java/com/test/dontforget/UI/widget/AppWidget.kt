@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import com.test.dontforget.MainActivity
 import com.test.dontforget.R
 import com.test.dontforget.Repository.TodoRepository
@@ -43,19 +44,21 @@ class AppWidget : AppWidgetProvider() {
 }
 
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-    val pendingIntent: PendingIntent = Intent(context, MainActivity::class.java)
-        .let { intent ->
+    val pendingIntent: PendingIntent = Intent(context, MainActivity::class.java).let { intent ->
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
 
     val views: RemoteViews = RemoteViews(context.packageName, R.layout.app_widget).apply {
         setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
+
+        // 이미지뷰
+        setInt(R.id.appwidget_imageview,"setColorFilter",ContextCompat.getColor(context, R.color.white))
     }
 
-    // Construct the RemoteViews object
-    val widgetText = "오전에 밥먹기"
-
+    // 텍스트뷰
+    val widgetText = "할일작성"
     views.setTextViewText(R.id.appwidget_text, widgetText)
+    views.setImageViewResource(R.id.appwidget_imageview, R.drawable.ic_create)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
