@@ -91,7 +91,18 @@ class MainActivity : AppCompatActivity() {
                                     newFriendList as ArrayList<Friend>
                                 )
                                 MyApplication.loginedUserInfo = userInfo
+
                                 replaceFragment(MAIN_FRAGMENT,false,null)
+
+                                // 위젯으로 실행시 글쓰기로 이동
+//                                if(MyApplication.isStartedWithWidget == true){
+////                                    replaceFragment(MAIN_FRAGMENT,false,null)
+//                                    MyApplication.isStartedWithWidget = false
+//                                    replaceFragment(TODO_ADD_FRAGMENT,true,null)
+//                                }else{
+//                                    MyApplication.isStartedWithWidget = false
+//                                    replaceFragment(MAIN_FRAGMENT,false,null)
+//                                }
                             }
                         }
                     }
