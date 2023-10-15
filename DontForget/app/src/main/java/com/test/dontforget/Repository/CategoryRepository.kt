@@ -71,6 +71,7 @@ class CategoryRepository {
                     a1.ref.child("categoryFontColor").setValue(categoryClass.categoryFontColor)
                     a1.ref.child("categoryJoinUserIdxList")
                         .setValue(categoryClass.categoryJoinUserIdxList)
+                    a1.ref.child("categoryOwnerName").setValue(categoryClass.categoryOwnerName)
                     a1.ref.child("categoryJoinUserNameList")
                         .setValue(categoryClass.categoryJoinUserNameList)
                         .addOnCompleteListener(callback1)

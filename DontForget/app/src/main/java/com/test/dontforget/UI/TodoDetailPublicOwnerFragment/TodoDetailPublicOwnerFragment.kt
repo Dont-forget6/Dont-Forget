@@ -166,6 +166,9 @@ class TodoDetailPublicOwnerFragment : Fragment() {
                     textInputLayoutTodoDetailPublicOwner.hintTextColor = ColorStateList.valueOf(it.toInt())
                 }
             }
+            todoMemo.observe(mainActivity) {
+                fragmentTodoDetailPublicOwnerBinding.editTextTodoDetailPublicOwnerMemo.setText(it.toString())
+            }
         }
         todoDetailViewModel.getTodoInfo(todoIdx)
 
@@ -282,6 +285,7 @@ class TodoDetailPublicOwnerFragment : Fragment() {
                 var locationName = placeAddress
                 var locationLatitude = latitude
                 var locationLongitude = longitude
+                var memo = editTextTodoDetailPublicOwnerMemo.text.toString()
 
                 if(content.isEmpty()) {
                     var dialogNormalBinding = DialogNormalBinding.inflate(layoutInflater)
@@ -331,7 +335,7 @@ class TodoDetailPublicOwnerFragment : Fragment() {
                     locationName,
                     locationLatitude,
                     locationLongitude,
-                    todoDetailViewModel.todoMemo.value!!.toString(),
+                    memo,
                     todoDetailViewModel.todoOwnerIdx.value!!.toLong(),
                     todoDetailViewModel.todoOwnerName.value!!.toString()
                 )

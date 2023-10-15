@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/textView6"
+        style="@style/Theme.DontForget.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/scdream_bold"
+        android:text="프로필 사진"
+        android:textSize="@dimen/font_size_big" />
+
+    <Button
+        android:id="@+id/button_myPage_default"
+        style="@style/Theme.DontForget.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:fontFamily="@font/scdream_regular"
+        android:textSize="@dimen/font_size_medium"
+        android:gravity="center|left"
+        android:text="기본 이미지로 변경" />
+
+    <Button
+        android:id="@+id/button_myPage_album"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        style="@style/Theme.DontForget.Text"
+        android:fontFamily="@font/scdream_regular"
+        android:gravity="left|center"
+        android:textSize="@dimen/font_size_medium"
+        android:text="앨범에서 사진 선택" />
+
+
+</LinearLayout>

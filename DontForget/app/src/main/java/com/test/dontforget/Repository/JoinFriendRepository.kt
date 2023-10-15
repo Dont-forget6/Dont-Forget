@@ -14,7 +14,12 @@ class JoinFriendRepository {
             val databaseRef = database.getReference("JoinFriendIdx")
             databaseRef.get().addOnCompleteListener(callback1)
         }
-
+        // 전체 friendList가져오기
+        fun getAllJoinFriend(callback1: (Task<DataSnapshot>) -> Unit){
+            val database = FirebaseDatabase.getInstance()
+            val databaseRef = database.getReference("joinFriendInfo")
+            databaseRef.get().addOnCompleteListener(callback1)
+        }
         fun setJoinFriendIdx(idx : Long, callback1: (Task<Void>) -> Unit){
             val database = FirebaseDatabase.getInstance()
             val databaseRef = database.getReference("JoinFriendIdx")
@@ -100,5 +105,16 @@ class JoinFriendRepository {
                 }
             }
         }
+        // 수정하기
+        fun modifyJoinFriend(joinFriendClass:JoinFriend){
+            val database = FirebaseDatabase.getInstance()
+            val joinFriendDataRef = database.getReference("joinFriendInfo")
+            joinFriendDataRef.orderByChild("joinFriendIdx").equalTo(joinFriendClass.joinFriendIdx.toDouble()).get().addOnCompleteListener {
+                for(c1 in it.result.children){
+                    c1.ref.child("joinFriendSenderName").setValue(joinFriendClass.joinFriendSenderName)
+                }
+            }
+        }
+
     }
 }
