@@ -95,6 +95,9 @@ class TodoDetailPublicFragment : Fragment() {
                     textInputLayoutTodoDetailPublic.hintTextColor = ColorStateList.valueOf(it.toInt())
                 }
             }
+            todoMemo.observe(mainActivity) {
+                fragmentTodoDetailPublicBinding.textViewTodoDetailPublicMemo.text = it.toString()
+            }
         }
         todoDetailViewModel.getTodoInfo(todoIdx)
 

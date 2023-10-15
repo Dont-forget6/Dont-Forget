@@ -25,18 +25,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageView_myPageModify_profile"
                 android:layout_marginTop="@dimen/margin_vertical_small1"
                 android:layout_gravity="center"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_person_24px" />
+                android:src="@drawable/ic_person_24px"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/accentDarkGray"/>
             <Button
                 android:id="@+id/button_myPageModify_modifyPhoto"
                 android:textSize="@dimen/font_size_medium"
-                android:layout_marginTop="@dimen/margin_vertical_small1"
+                android:layout_marginTop="@dimen/margin_vertical_small3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -46,7 +48,25 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_vertical_big2"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_myPageModify_name"
+                android:layout_marginTop="@dimen/margin_vertical_small3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="이름"
+                app:boxBackgroundMode="filled">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputEditText_myPageModify_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00FFFFFF"
+                    android:fontFamily="@font/scdream_regular"
+                    android:text="이름!"
+                    android:textSize="@dimen/font_size_medium" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout_myPageModify_introduce"
                 android:layout_marginTop="@dimen/margin_vertical_small3"
@@ -64,18 +84,19 @@
                     android:text="자기소개!"
                     android:textSize="@dimen/font_size_medium" />
 
-                <Button
-                    android:id="@+id/button_myPageModify_modifyComplete"
-                    style="@style/Theme.DontForget.Button"
-                    android:layout_marginTop="@dimen/margin_vertical_small3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="@string/button_modify_complete"
-                    android:textSize="@dimen/font_size_big">
 
-                </Button>
             </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:id="@+id/button_myPageModify_modifyComplete"
+                style="@style/Theme.DontForget.Button"
+                android:layout_marginTop="@dimen/margin_vertical_small3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/button_modify_complete"
+                android:textSize="@dimen/font_size_big">
+
+            </Button>
         </LinearLayout>
 
     </ScrollView>
