@@ -22,7 +22,6 @@ import com.test.dontforget.MyApplication
 import com.test.dontforget.R
 import com.test.dontforget.Repository.JoinFriendRepository
 import com.test.dontforget.Repository.UserRepository
-import com.test.dontforget.Util.LoadingDialog
 import com.test.dontforget.databinding.DialogNormalBinding
 import com.test.dontforget.databinding.FragmentFriendsDetailBinding
 import com.test.dontforget.databinding.RowFriendsDetailBinding
@@ -34,7 +33,6 @@ class FriendsDetailFragment : Fragment() {
     lateinit var mainActivity: MainActivity
 
     lateinit var viewModel: FriendsDetailViewModel
-    lateinit var loadingDialog: LoadingDialog
 
     // 친구 이메일
     lateinit var _FName : String
@@ -96,8 +94,7 @@ class FriendsDetailFragment : Fragment() {
         viewModel.getCategoryAll()
 
         binding.run {
-            loadingDialog = LoadingDialog(requireContext())
-            loadingDialog.show()
+
             viewModel.friendUserImage.observe(mainActivity) {
                 _FImage = it
                 // 프로필 사진
@@ -105,10 +102,8 @@ class FriendsDetailFragment : Fragment() {
                     if (it.isSuccessful) {
                         val fileUri = it.result
                         Glide.with(mainActivity).load(fileUri).into(binding.imageViewFriendsDetail)
-                        loadingDialog.dismiss()
                     } else {
                         binding.imageViewFriendsDetail.setImageResource(R.drawable.ic_person_24px)
-                        loadingDialog.dismiss()
                     }
                 }
             }
@@ -332,7 +327,7 @@ class FriendsDetailFragment : Fragment() {
     private fun loadSampleData(){
         lifecycleScope.launch {
             showSampleData(isLoading = true)
-            delay(1500)
+            delay(1200)
             showSampleData(isLoading = false)
         }
     }

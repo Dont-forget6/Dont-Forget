@@ -194,7 +194,7 @@ class MyPageModifyFragment : Fragment() {
     private fun loadSampleData(){
         lifecycleScope.launch {
             showSampleData(isLoading = true)
-            delay(1500)
+            delay(1200)
             showSampleData(isLoading = false)
         }
     }

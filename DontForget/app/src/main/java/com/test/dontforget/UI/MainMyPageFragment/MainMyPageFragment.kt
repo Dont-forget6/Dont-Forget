@@ -15,16 +15,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
 import com.test.dontforget.Repository.UserRepository
 import com.test.dontforget.UI.MainMyPageFragment.MainMyPageViewModel
-import com.test.dontforget.Util.LoadingDialog
 import com.test.dontforget.databinding.DialogNormalBinding
 import com.test.dontforget.databinding.FragmentMainMyPageBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -147,7 +142,7 @@ class MainMyPageFragment : Fragment() {
     private fun loadSampleData(){
         lifecycleScope.launch {
             showSampleData(isLoading = true)
-            delay(1500)
+            delay(1200)
             showSampleData(isLoading = false)
         }
     }
