@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -28,6 +29,7 @@ import com.test.dontforget.databinding.DialogNormalBinding
 import com.test.dontforget.databinding.FragmentMainMyPageBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -36,7 +38,6 @@ class MainMyPageFragment : Fragment() {
     lateinit var mainActivity: MainActivity
     lateinit var mainMyPageViewModel: MainMyPageViewModel
     lateinit var firebaseAuth : FirebaseAuth
-    lateinit var loadingDialog: LoadingDialog
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,11 +47,11 @@ class MainMyPageFragment : Fragment() {
         mainActivity = activity as MainActivity
         firebaseAuth = FirebaseAuth.getInstance()
         fragmentMainMyPageBinding.run {
-            loadingDialog = LoadingDialog(requireContext())
-            loadingDialog.show()
+
             toolbarMainMyPage.run {
                 title = getString(R.string.myPage)
             }
+            loadSampleData()
             mainMyPageViewModel = ViewModelProvider(mainActivity)[MainMyPageViewModel::class.java]
             mainMyPageViewModel.run {
                 userName.observe(mainActivity) {
@@ -63,10 +64,8 @@ class MainMyPageFragment : Fragment() {
                                 val fileUri = it.result
                                 Glide.with(mainActivity).load(fileUri).diskCacheStrategy(
                                     DiskCacheStrategy.ALL).into(imageViewMyPageProfile)
-                                loadingDialog.dismiss()
                             }else{
                                 fragmentMainMyPageBinding.imageViewMyPageProfile.setImageResource(R.drawable.ic_person_24px)
-                                loadingDialog.dismiss()
                             }
                         }
 
@@ -145,17 +144,23 @@ class MainMyPageFragment : Fragment() {
 
         return fragmentMainMyPageBinding.root
     }
+    private fun loadSampleData(){
+        lifecycleScope.launch {
+            showSampleData(isLoading = true)
+            delay(1500)
+            showSampleData(isLoading = false)
+        }
+    }
+    private fun showSampleData(isLoading:Boolean){
+        if(isLoading){
+            fragmentMainMyPageBinding.shimmerLayoutMainMyPage.startShimmer()
+            fragmentMainMyPageBinding.shimmerLayoutMainMyPage.visibility = View.VISIBLE
+            fragmentMainMyPageBinding.imageViewMyPageProfile.visibility = View.GONE
+        }else{
+            fragmentMainMyPageBinding.shimmerLayoutMainMyPage.stopShimmer()
+            fragmentMainMyPageBinding.shimmerLayoutMainMyPage.visibility = View.GONE
+            fragmentMainMyPageBinding.imageViewMyPageProfile.visibility = View.VISIBLE
 
-    override fun onResume() {
-        super.onResume()
-        FirebaseDatabase.getInstance().reference
-            .child("userInfo")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError) {
-                }
-                override fun onDataChange(p0: DataSnapshot) {
-                    mainMyPageViewModel.getUserInfo(MyApplication.loginedUserInfo)
-                }
-            })
+        }
     }
 }

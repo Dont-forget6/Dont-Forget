@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -42,7 +43,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MyPageModifyFragment : Fragment() {
     lateinit var fragmentMyPageModifyBinding: FragmentMyPageModifyBinding
@@ -70,7 +70,7 @@ class MyPageModifyFragment : Fragment() {
                     mainActivity.removeFragment(MainActivity.MY_PAGE_MODIFY_FRAGMENT)
                 }
             }
-
+            loadSampleData()
             myPageModifyViewModel = ViewModelProvider(mainActivity)[MyPageModifyViewModel::class.java]
             myPageModifyViewModel.run {
                 userName.observe(mainActivity){
@@ -123,7 +123,7 @@ class MyPageModifyFragment : Fragment() {
                     "None".toUri() -> "None"
                     else -> "image/img_${System.currentTimeMillis()}.jpg"
                 }
-
+                Log.e("으악",newImage)
                 // 이미지가 변경되지 않으면 업로드하지 않고 이전 이미지를 사용
                 if (newImage != user.userImage) {
                     UserRepository.setUploadProfile(newImage, uploadUri!!) {}
@@ -148,7 +148,7 @@ class MyPageModifyFragment : Fragment() {
                                 userFriendList.add(friend)
                             }
 
-                            var friendUserClass = UserClass(
+                            var modifyUserClass = UserClass(
                                 userIdx,
                                 newName,
                                 userEmail,
@@ -162,7 +162,8 @@ class MyPageModifyFragment : Fragment() {
                             CoroutineScope(Dispatchers.Main).launch {
                                 modifyName(userName,newName)
                             }
-                            UserRepository.modifyUserInfo(friendUserClass) {}
+                            UserRepository.modifyUserInfo(modifyUserClass) {}
+                            MyApplication.loginedUserInfo = modifyUserClass
                         }
 
                         GlobalScope.launch {
@@ -189,6 +190,27 @@ class MyPageModifyFragment : Fragment() {
 
         return fragmentMyPageModifyBinding.root
     }
+
+    private fun loadSampleData(){
+        lifecycleScope.launch {
+            showSampleData(isLoading = true)
+            delay(1500)
+            showSampleData(isLoading = false)
+        }
+    }
+    private fun showSampleData(isLoading:Boolean){
+        if(isLoading){
+            fragmentMyPageModifyBinding.shimmerLayoutMainMyPageModify.startShimmer()
+            fragmentMyPageModifyBinding.shimmerLayoutMainMyPageModify.visibility = View.VISIBLE
+            fragmentMyPageModifyBinding.imageViewMyPageModifyProfile.visibility = View.GONE
+        }else{
+            fragmentMyPageModifyBinding.shimmerLayoutMainMyPageModify.stopShimmer()
+            fragmentMyPageModifyBinding.shimmerLayoutMainMyPageModify.visibility = View.GONE
+            fragmentMyPageModifyBinding.imageViewMyPageModifyProfile.visibility = View.VISIBLE
+
+        }
+    }
+
     // 앨범 설정
     fun albumSetting(previewImageView: ImageView): ActivityResultLauncher<Intent> {
         val albumContract = ActivityResultContracts.StartActivityForResult()

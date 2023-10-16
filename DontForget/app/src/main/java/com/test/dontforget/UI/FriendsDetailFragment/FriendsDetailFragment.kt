@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -25,6 +26,8 @@ import com.test.dontforget.Util.LoadingDialog
 import com.test.dontforget.databinding.DialogNormalBinding
 import com.test.dontforget.databinding.FragmentFriendsDetailBinding
 import com.test.dontforget.databinding.RowFriendsDetailBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class FriendsDetailFragment : Fragment() {
     lateinit var binding: FragmentFriendsDetailBinding
@@ -109,7 +112,7 @@ class FriendsDetailFragment : Fragment() {
                     }
                 }
             }
-
+            loadSampleData()
             // 툴바
             toolbarFriendsDetail.run {
                 title = "친구"
@@ -323,6 +326,26 @@ class FriendsDetailFragment : Fragment() {
         override fun onBindViewHolder(holder: ViewHolderFD, position: Int) {
             holder.textViewRowFriendsDetailCategory.text = MCL[position].categoryName
             holder.textViewRowFriendsDetailCategory.setTextColor(MCL[position].categoryColor.toInt())
+        }
+    }
+
+    private fun loadSampleData(){
+        lifecycleScope.launch {
+            showSampleData(isLoading = true)
+            delay(1500)
+            showSampleData(isLoading = false)
+        }
+    }
+    private fun showSampleData(isLoading:Boolean){
+        if(isLoading){
+            binding.shimmerLayoutFriendsDetail.startShimmer()
+            binding.shimmerLayoutFriendsDetail.visibility = View.VISIBLE
+            binding.imageViewFriendsDetail.visibility = View.GONE
+        }else{
+            binding.shimmerLayoutFriendsDetail.stopShimmer()
+            binding.shimmerLayoutFriendsDetail.visibility = View.GONE
+            binding.imageViewFriendsDetail.visibility = View.VISIBLE
+
         }
     }
 }
