@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+    android:shape="oval">
 
     <!-- Border color and width -->
     <stroke
         android:color="@color/colorPrimary"
-        android:width="3dp" /> <!-- Adjust the width as needed -->
+        android:width="2dp" /> <!-- Adjust the width as needed -->
 
     <!-- Padding if necessary -->
     <padding
