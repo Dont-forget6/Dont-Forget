@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.test.dontforget.DAO.AlertClass
 import com.test.dontforget.DAO.CategoryClass
 import com.test.dontforget.DAO.Friend
 import com.test.dontforget.DAO.JoinFriend
@@ -29,6 +30,7 @@ import com.test.dontforget.DAO.UserClass
 import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
+import com.test.dontforget.Repository.AlertRepository
 import com.test.dontforget.Repository.CategoryRepository
 import com.test.dontforget.Repository.JoinFriendRepository
 import com.test.dontforget.Repository.TodoRepository
@@ -393,6 +395,20 @@ class MyPageModifyFragment : Fragment() {
                     // 수정된 친구정보 반영
                     UserRepository.modifyUserInfo(friendUserClass){}
                 }
+            }
+        }
+        AlertRepository.getAlertAll {
+            for(c1 in it.result.children){
+                val alertIdx = c1.child("alertIdx").value as Long
+                val alertContent = c1.child("alertContent").value as String
+                var alertName = c1.child("alertName").value as String
+                val alertReceiverIdx = c1.child("alertReceiverIdx").value as Long
+                val alertType = c1.child("alertType").value as Long
+                if( alertName == beforeName){
+                    alertName = afterName
+                }
+                val alertInfo = AlertClass(alertIdx,alertContent, alertReceiverIdx, alertType, alertName)
+                AlertRepository.modifyAlertUserName(alertInfo){}
             }
         }
     }
