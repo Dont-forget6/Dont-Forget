@@ -40,14 +40,18 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageView_friendsDetail"
                     android:layout_width="@dimen/image_size_profile"
                     android:layout_height="@dimen/image_size_profile"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_person_24px" />
+                    android:src="@drawable/ic_person_24px"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="@color/accentDarkGray"
+                    />
 
                 <TextView
+                    android:layout_marginTop="@dimen/margin_vertical_small3"
                     android:id="@+id/textView_friendsDetail_name"
                     style="@style/Theme.DontForget.Text"
                     android:layout_width="wrap_content"

@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:transitionGroup="true"
-    tools:context=".UI.MainMyPageFragment.MainMyPageFragment">
+    android:transitionGroup="true">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_mainMyPage"
@@ -35,15 +34,18 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageView_myPage_profile"
                     android:layout_width="@dimen/image_size_profile"
                     android:layout_height="@dimen/image_size_profile"
                     android:layout_gravity="center"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_person_24px" />
+                    android:src="@drawable/ic_person_24px"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="@color/accentDarkGray"/>
 
                 <TextView
+                    android:layout_marginTop="@dimen/margin_vertical_small3"
                     android:id="@+id/textView_mainMyPage_name"
                     style="@style/Theme.DontForget.Text"
                     android:layout_width="match_parent"
@@ -102,7 +104,7 @@
                     android:fontFamily="@font/scdream_regular"
                     android:gravity="left"
                     android:text="@string/myPage_modify"
-                    android:textSize="@dimen/font_size_big"></TextView>
+                    android:textSize="@dimen/font_size_big" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

@@ -95,9 +95,17 @@ dependencies {
     // geofencing
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
+
+    // 원형 이미지 뷰
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
+
     // custom calendar
     implementation 'com.kizitonwose.calendar:view:2.4.0'
+
 }
