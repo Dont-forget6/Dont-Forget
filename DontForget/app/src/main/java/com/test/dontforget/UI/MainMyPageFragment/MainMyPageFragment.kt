@@ -142,7 +142,7 @@ class MainMyPageFragment : Fragment() {
     private fun loadSampleData(){
         lifecycleScope.launch {
             showSampleData(isLoading = true)
-            delay(1200)
+            delay(1500)
             showSampleData(isLoading = false)
         }
     }
@@ -150,11 +150,11 @@ class MainMyPageFragment : Fragment() {
         if(isLoading){
             fragmentMainMyPageBinding.shimmerLayoutMainMyPage.startShimmer()
             fragmentMainMyPageBinding.shimmerLayoutMainMyPage.visibility = View.VISIBLE
-            fragmentMainMyPageBinding.imageViewMyPageProfile.visibility = View.GONE
+            fragmentMainMyPageBinding.materialCardViewMainMyPage.visibility = View.GONE
         }else{
             fragmentMainMyPageBinding.shimmerLayoutMainMyPage.stopShimmer()
             fragmentMainMyPageBinding.shimmerLayoutMainMyPage.visibility = View.GONE
-            fragmentMainMyPageBinding.imageViewMyPageProfile.visibility = View.VISIBLE
+            fragmentMainMyPageBinding.materialCardViewMainMyPage.visibility = View.VISIBLE
 
         }
     }

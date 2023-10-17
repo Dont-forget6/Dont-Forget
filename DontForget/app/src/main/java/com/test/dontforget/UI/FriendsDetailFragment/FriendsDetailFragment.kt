@@ -327,7 +327,7 @@ class FriendsDetailFragment : Fragment() {
     private fun loadSampleData(){
         lifecycleScope.launch {
             showSampleData(isLoading = true)
-            delay(1200)
+            delay(1500)
             showSampleData(isLoading = false)
         }
     }
