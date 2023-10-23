@@ -233,8 +233,8 @@ class MainHomeFragment : Fragment() {
             weekHeight * binding.calendarViewMainHomeFragment.findFirstVisibleMonth()?.weekDays.orEmpty()
                 .count()
 
-        val oldHeight = if (monthToWeek) visibleMonthHeight else weekHeight
-        val newHeight = if (monthToWeek) weekHeight else visibleMonthHeight
+        val oldHeight = if (monthToWeek) weekHeight else visibleMonthHeight
+        val newHeight = if (monthToWeek) visibleMonthHeight else weekHeight
 
         val animator = ValueAnimator.ofInt(oldHeight, newHeight)
         animator.addUpdateListener { anim ->
