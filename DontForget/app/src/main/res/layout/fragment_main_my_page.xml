@@ -20,9 +20,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/padding_size_normal">
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout_mainMyPage"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <include layout="@layout/shimmer_userprofile"/>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
         <com.google.android.material.card.MaterialCardView
             style="@style/Theme.DontForget.CardView"
+            android:id="@+id/materialCardView_mainMyPage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="#00FFFFFF"
@@ -44,6 +53,9 @@
                     app:civ_border_width="1dp"
                     app:civ_border_color="@color/accentDarkGray"/>
 
+
+
+
                 <TextView
                     android:layout_marginTop="@dimen/margin_vertical_small3"
                     android:id="@+id/textView_mainMyPage_name"
@@ -52,7 +64,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/scdream_regular"
                     android:gravity="center"
-                    android:text="이름"
                     android:textSize="@dimen/font_size_medium" />
 
 
@@ -63,7 +74,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/scdream_regular"
                     android:gravity="center"
-                    android:text="이메일"
                     android:textSize="@dimen/font_size_medium" />
 
                 <TextView
@@ -73,12 +83,13 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/scdream_regular"
                     android:gravity="center"
-                    android:text="자기소개 한줄"
                     android:textSize="@dimen/font_size_medium" />
             </LinearLayout>
 
 
         </com.google.android.material.card.MaterialCardView>
+
+
 
         <Space
             android:layout_width="match_parent"

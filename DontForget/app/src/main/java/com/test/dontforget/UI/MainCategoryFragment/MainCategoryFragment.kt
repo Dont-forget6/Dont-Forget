@@ -112,8 +112,6 @@ class MainCategoryFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
             }
 
-            //mainCategoryViewModel.getMyCategory(userIdx)
-            loadData()
         }
 
         return fragmentMainCategoryBinding.root
@@ -211,30 +209,5 @@ class MainCategoryFragment : Fragment() {
         }
     }
 
-    private fun loadData() {
-        lifecycleScope.launch {
-            showData(isLoading = true)
-            mainCategoryViewModel.getMyCategory(userIdx)
 
-            delay(1000)
-
-            showData(isLoading = false)
-        }
-    }
-
-    private fun showData(isLoading: Boolean) {
-        if (isLoading) {
-            fragmentMainCategoryBinding.run {
-                shimmerLayoutMainCategory.startShimmer()
-                shimmerLayoutMainCategory.visibility = View.VISIBLE
-                recyclerViewMainCategory.visibility = View.GONE
-            }
-        } else {
-            fragmentMainCategoryBinding.run {
-                shimmerLayoutMainCategory.stopShimmer()
-                shimmerLayoutMainCategory.visibility = View.GONE
-                recyclerViewMainCategory.visibility = View.VISIBLE
-            }
-        }
-    }
 }
