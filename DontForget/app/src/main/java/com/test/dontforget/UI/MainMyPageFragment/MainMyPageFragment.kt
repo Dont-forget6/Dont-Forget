@@ -63,9 +63,11 @@ class MainMyPageFragment : Fragment() {
                                 val fileUri = it.result
                                 Glide.with(mainActivity).load(fileUri).diskCacheStrategy(
                                     DiskCacheStrategy.ALL).into(imageViewMyPageProfile)
-                                MyApplication.loginedUserProfile = fileUri.toString()
+                                loadingDialog.dismiss()
+                            }else{
+                                fragmentMainMyPageBinding.imageViewMyPageProfile.setImageResource(R.drawable.ic_person_24px)
+                                loadingDialog.dismiss()
                             }
-                            loadingDialog.dismiss()
                         }
 
                     }

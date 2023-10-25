@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -21,6 +22,8 @@ import com.test.dontforget.R
 import com.test.dontforget.databinding.DialogCategoryAddBinding
 import com.test.dontforget.databinding.FragmentMainCategoryBinding
 import com.test.dontforget.databinding.RowMainCategoryBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainCategoryFragment : Fragment() {
     lateinit var fragmentMainCategoryBinding: FragmentMainCategoryBinding
@@ -42,7 +45,7 @@ class MainCategoryFragment : Fragment() {
             categoryList.observe(mainActivity) {
                 fragmentMainCategoryBinding.recyclerViewMainCategory.adapter?.notifyDataSetChanged()
 
-                if(it.size == 0) {
+                if (it.size == 0) {
                     fragmentMainCategoryBinding.run {
                         textViewMainCategoryZero.visibility = View.VISIBLE
                     }
@@ -76,13 +79,23 @@ class MainCategoryFragment : Fragment() {
                     builder.setView(dialogCategoryAddBinding.root)
 
                     builder.setPositiveButton("확인") { dialogInterface: DialogInterface, i: Int ->
-                        val checkedItem = dialogCategoryAddBinding.radioGroupCategoryType.checkedRadioButtonId
+                        val checkedItem =
+                            dialogCategoryAddBinding.radioGroupCategoryType.checkedRadioButtonId
                         when (checkedItem) {
                             R.id.radioButtonPersonal -> {
-                                mainActivity.replaceFragment(MainActivity.CATEGORY_ADD_PERSONAL_FRAGMENT, true, null)
+                                mainActivity.replaceFragment(
+                                    MainActivity.CATEGORY_ADD_PERSONAL_FRAGMENT,
+                                    true,
+                                    null
+                                )
                             }
+
                             R.id.radioButtonPublic -> {
-                                mainActivity.replaceFragment(MainActivity.CATEGORY_ADD_PUBLIC_FRAGMENT, true, null)
+                                mainActivity.replaceFragment(
+                                    MainActivity.CATEGORY_ADD_PUBLIC_FRAGMENT,
+                                    true,
+                                    null
+                                )
                             }
                         }
                     }
@@ -99,13 +112,15 @@ class MainCategoryFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
             }
 
-            mainCategoryViewModel.getMyCategory(userIdx)
+            //mainCategoryViewModel.getMyCategory(userIdx)
+            loadData()
         }
 
         return fragmentMainCategoryBinding.root
     }
 
-    inner class MainCategoryRecyclerViewAdpater : RecyclerView.Adapter<MainCategoryRecyclerViewAdpater.MainCategoryViewHolder>() {
+    inner class MainCategoryRecyclerViewAdpater :
+        RecyclerView.Adapter<MainCategoryRecyclerViewAdpater.MainCategoryViewHolder>() {
         inner class MainCategoryViewHolder(rowMainCategoryBinding: RowMainCategoryBinding) :
             RecyclerView.ViewHolder(rowMainCategoryBinding.root) {
 
@@ -115,29 +130,45 @@ class MainCategoryFragment : Fragment() {
                 categoryName = rowMainCategoryBinding.textViewRowMainCategoryCategoryName
 
                 rowMainCategoryBinding.root.setOnClickListener {
-                    val categoryIsPublic = mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryIsPublic!!
-                    val categoryOwnerIdx = mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryOwnerIdx!!
-                    val categoryIdx = mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryIdx!!
-                    val categoryOwnerName = mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryOwnerName!!
+                    val categoryIsPublic =
+                        mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryIsPublic!!
+                    val categoryOwnerIdx =
+                        mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryOwnerIdx!!
+                    val categoryIdx =
+                        mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryIdx!!
+                    val categoryOwnerName =
+                        mainCategoryViewModel.categoryList.value?.get(adapterPosition)?.categoryOwnerName!!
 
                     val bundle = Bundle()
                     bundle.putLong("categoryIdx", categoryIdx)
 
                     // 개인 카테고리일 경우
                     if (categoryIsPublic == 0L) {
-                        mainActivity.replaceFragment(MainActivity.CATEGORY_OPTION_PERSONAL_FRAGMENT, true, bundle)
+                        mainActivity.replaceFragment(
+                            MainActivity.CATEGORY_OPTION_PERSONAL_FRAGMENT,
+                            true,
+                            bundle
+                        )
                     }
                     // 공용 카테고리일 경우
                     else {
                         // 내가 만든 카테고리일 경우
                         if (userIdx == categoryOwnerIdx) {
-                            mainActivity.replaceFragment(MainActivity.CATEGORY_OPTION_PUBLIC_OWNER_FRAGMENT, true, bundle)
+                            mainActivity.replaceFragment(
+                                MainActivity.CATEGORY_OPTION_PUBLIC_OWNER_FRAGMENT,
+                                true,
+                                bundle
+                            )
                         }
                         // 타인이 만든 카테고리일 경우
                         else {
                             bundle.putLong("categoryOwnerIdx", categoryOwnerIdx)
                             bundle.putString("categoryOwnerName", categoryOwnerName)
-                            mainActivity.replaceFragment(MainActivity.CATEGORY_OPTION_PUBLIC_FRAGMENT, true, bundle)
+                            mainActivity.replaceFragment(
+                                MainActivity.CATEGORY_OPTION_PUBLIC_FRAGMENT,
+                                true,
+                                bundle
+                            )
                         }
                     }
                 }
@@ -161,20 +192,48 @@ class MainCategoryFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: MainCategoryViewHolder, position: Int) {
-            holder.categoryName.text = mainCategoryViewModel.categoryList.value?.get(position)?.categoryName!!
+            holder.categoryName.text =
+                mainCategoryViewModel.categoryList.value?.get(position)?.categoryName!!
             holder.categoryName.setTextColor(mainCategoryViewModel.categoryList.value?.get(position)?.categoryColor?.toInt()!!)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if(mainCategoryViewModel.categoryList.value?.size == 0) {
+        if (mainCategoryViewModel.categoryList.value?.size == 0) {
             fragmentMainCategoryBinding.run {
                 textViewMainCategoryZero.visibility = View.VISIBLE
             }
         } else {
             fragmentMainCategoryBinding.run {
                 textViewMainCategoryZero.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun loadData() {
+        lifecycleScope.launch {
+            showData(isLoading = true)
+            mainCategoryViewModel.getMyCategory(userIdx)
+
+            delay(1000)
+
+            showData(isLoading = false)
+        }
+    }
+
+    private fun showData(isLoading: Boolean) {
+        if (isLoading) {
+            fragmentMainCategoryBinding.run {
+                shimmerLayoutMainCategory.startShimmer()
+                shimmerLayoutMainCategory.visibility = View.VISIBLE
+                recyclerViewMainCategory.visibility = View.GONE
+            }
+        } else {
+            fragmentMainCategoryBinding.run {
+                shimmerLayoutMainCategory.stopShimmer()
+                shimmerLayoutMainCategory.visibility = View.GONE
+                recyclerViewMainCategory.visibility = View.VISIBLE
             }
         }
     }
