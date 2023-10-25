@@ -428,11 +428,12 @@ class TodoAddFragment : Fragment() {
                                             time, locationName, locationLatitude, locationLongtitude, memo, owneridx, ownerName)
                                         TodoRepository.setTodoAddInfo(newclass) {
                                             TodoRepository.setTodoIdx(idx) {
-                                                var text = "${names}에 ${myDate} 새 할일이 추가되었습니다"
+                                                var alertName = "${names}에 ${myDate} "
+                                                var text = "새 할일이 추가되었습니다"
                                                 AlertRepository.getAlertIdx {
                                                     var idx = it.result.value as Long
                                                     idx++
-                                                    var newclass2 = AlertClass(idx, text, useridx, 2)
+                                                    var newclass2 = AlertClass(idx, text, useridx, 2,alertName)
                                                     AlertRepository.addAlertInfo(newclass2) {
                                                         AlertRepository.setAlertIdx(idx) {
                                                             Toast.makeText(mainActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()

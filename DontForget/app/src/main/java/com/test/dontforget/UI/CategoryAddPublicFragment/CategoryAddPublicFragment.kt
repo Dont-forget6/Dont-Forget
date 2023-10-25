@@ -260,8 +260,9 @@ class CategoryAddPublicFragment : Fragment() {
                             // 알림 idx 가져오기
                             AlertRepository.getAlertIdx {
                                 var alertIdx = it.result.value as Long
+                                var alertName = userInfo.userName
                                 val alertContent =
-                                    "${userInfo.userName}님이 ${categoryName} 카테고리에 나를 추가했습니다."
+                                    "님이 ${categoryName} 카테고리에 나를 추가했습니다."
 
                                 for (idx in 1 until categoryJoinUserIdxList.size) {
                                     alertIdx++
@@ -270,7 +271,8 @@ class CategoryAddPublicFragment : Fragment() {
                                         alertIdx,
                                         alertContent,
                                         categoryJoinUserIdxList[idx],
-                                        1
+                                        1,
+                                        alertName
                                     )
 
                                     // 알림 객체 저장
