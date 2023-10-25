@@ -1,6 +1,7 @@
 package com.test.dontforget.UI.MainHomeFragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
 import com.test.dontforget.Repository.TodoRepository
+import com.test.dontforget.UI.TodoAddFragment.TodoAddActivity
 import com.test.dontforget.Util.LoadingDialog
 import com.test.dontforget.Util.ThemeUtil
 import com.test.dontforget.databinding.FragmentMainHomeBinding
@@ -144,7 +146,10 @@ class MainHomeFragment : Fragment() {
             }
 
             buttonMainHomeFragment.setOnClickListener {
-                mainActivity.replaceFragment(MainActivity.TODO_ADD_FRAGMENT, true, null)
+//                mainActivity.replaceFragment(MainActivity.TODO_ADD_FRAGMENT, true, null)
+                val todoAddintent = Intent(mainActivity, TodoAddActivity::class.java)
+                startActivity(todoAddintent)
+                mainActivity.finish()
             }
 
             setCalendar()
