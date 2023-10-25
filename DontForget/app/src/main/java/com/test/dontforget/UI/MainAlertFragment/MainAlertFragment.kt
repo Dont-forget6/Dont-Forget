@@ -165,7 +165,7 @@ class MainAlertFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ViewHolderClass, position: Int) {
             holder.rowAlertLogo.setImageResource(R.drawable.img_logo)
-            holder.rowAlert.text = userAlertList.get(position).alertContent
+            holder.rowAlert.text = userAlertList.get(position).alertName + userAlertList.get(position).alertContent
         }
     }
 }

@@ -257,30 +257,23 @@ class TodoAddFragment : Fragment() {
             linearlayoutTodoAddLocation.run {
 
                 setOnClickListener {
-                    val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION // 또는 ACCESS_COARSE_LOCATION
-                    val requestCode = 123 // 요청 코드 (임의의 숫자)
+                    //구글맵 키 받아옴
+                    val key = com.test.dontforget.BuildConfig.googlemapkey
 
-                    if (ContextCompat.checkSelfPermission(requireContext(), locationPermission) == PackageManager.PERMISSION_GRANTED) {
-                        //구글맵 키 받아옴
-                        val key = com.test.dontforget.BuildConfig.googlemapkey
+                    // plac api 초기화
+                    Places.initialize(context,key)
+                    val placesClient = Places.createClient(mainActivity)
 
-                        // plac api 초기화
-                        Places.initialize(context,key)
-                        val placesClient = Places.createClient(mainActivity)
-
-                        val field = listOf(Place.Field.NAME,Place.Field.LAT_LNG,Place.Field.ADDRESS_COMPONENTS,Place.Field.TYPES,Place.Field.ADDRESS)
-                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,field)
-                            .setHint("주소를 입력해주세요")
-                            .build(mainActivity)
-                        startAutocomplete.launch(intent)
-
-
-                    } else {
-                        // 권한을 요청
-                        ActivityCompat.requestPermissions(requireActivity(), arrayOf(locationPermission), requestCode)
-                    }
-
-
+                    val field = listOf(
+                        Place.Field.NAME,
+                        Place.Field.LAT_LNG,
+                        Place.Field.ADDRESS_COMPONENTS,
+                        Place.Field.TYPES,
+                        Place.Field.ADDRESS)
+                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,field)
+                        .setHint("주소를 입력해주세요")
+                        .build(mainActivity)
+                    startAutocomplete.launch(intent)
                 }
 
             }
@@ -435,11 +428,12 @@ class TodoAddFragment : Fragment() {
                                             time, locationName, locationLatitude, locationLongtitude, memo, owneridx, ownerName)
                                         TodoRepository.setTodoAddInfo(newclass) {
                                             TodoRepository.setTodoIdx(idx) {
-                                                var text = "${names}에 ${myDate} 새 할일이 추가되었습니다"
+                                                var alertName = "${names}에 ${myDate} "
+                                                var text = "새 할일이 추가되었습니다"
                                                 AlertRepository.getAlertIdx {
                                                     var idx = it.result.value as Long
                                                     idx++
-                                                    var newclass2 = AlertClass(idx, text, useridx, 2)
+                                                    var newclass2 = AlertClass(idx, text, useridx, 2,alertName)
                                                     AlertRepository.addAlertInfo(newclass2) {
                                                         AlertRepository.setAlertIdx(idx) {
                                                             Toast.makeText(mainActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()

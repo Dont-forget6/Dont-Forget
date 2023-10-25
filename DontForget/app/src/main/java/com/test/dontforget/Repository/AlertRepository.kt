@@ -1,8 +1,11 @@
 package com.test.dontforget.Repository
 
+import android.app.AlertDialog
+import android.media.session.MediaSessionManager.RemoteUserInfo
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.test.dontforget.DAO.AlertClass
 
 class AlertRepository {
@@ -71,6 +74,24 @@ class AlertRepository {
                     a1.ref.removeValue().addOnCompleteListener(callback1)
                 }
             }
+        }
+        fun modifyAlertUserName(alertInfo :AlertClass,callback1: (Task<DataSnapshot>) -> Unit){
+            val database = FirebaseDatabase.getInstance()
+            val alertInfoData = database.getReference("alertInfo")
+            alertInfoData.orderByChild("alertIdx").equalTo(alertInfo.alertIdx.toDouble()).get().addOnCompleteListener {
+                for(data in it.result.children){
+                    data.ref.child("alertIdx").setValue(alertInfo.alertIdx)
+                    data.ref.child("alertContent").setValue(alertInfo.alertContent)
+                    data.ref.child("alertName").setValue(alertInfo.alertName)
+                    data.ref.child("alertReceiverIdx").setValue(alertInfo.alertReceiverIdx)
+                    data.ref.child("alertType").setValue(alertInfo.alertType)
+                }
+            }
+        }
+        fun getAlertAll(callback1: (Task<DataSnapshot>) -> Unit){
+            val database = FirebaseDatabase.getInstance()
+            val alertInfoRef = database.getReference("alertInfo")
+            alertInfoRef.get().addOnCompleteListener(callback1)
         }
     }
 }

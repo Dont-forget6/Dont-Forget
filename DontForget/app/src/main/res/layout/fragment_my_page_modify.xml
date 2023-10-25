@@ -35,6 +35,16 @@
                 android:src="@drawable/ic_person_24px"
                 app:civ_border_width="1dp"
                 app:civ_border_color="@color/accentDarkGray"/>
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerLayout_mainMyPageModify"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_vertical_small1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/shimmer_userprofile2"/>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
             <Button
                 android:id="@+id/button_myPageModify_modifyPhoto"
                 android:textSize="@dimen/font_size_medium"

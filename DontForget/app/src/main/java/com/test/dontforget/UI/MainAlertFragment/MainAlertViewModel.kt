@@ -39,8 +39,8 @@ class MainAlertViewModel : ViewModel() {
                 var alertContent = c1.child("alertContent").value as String
                 val alertReceiverIdx = c1.child("alertReceiverIdx").value as Long
                 val alertType = c1.child("alertType").value as Long
-
-                val a1 = AlertClass(alertIdx, alertContent, alertReceiverIdx, alertType)
+                val alertName = c1.child("alertName").value as String
+                val a1 = AlertClass(alertIdx, alertContent, alertReceiverIdx, alertType,alertName)
                 tempList.add(a1)
             }
 

@@ -225,11 +225,11 @@ class MainFriendsFragment : Fragment() {
                                                                                 var alertIdx = it.result.value as Long
                                                                                 alertIdx ++
 
-                                                                                var alertContent = MyApplication.loginedUserInfo.userName + " 님이 친구 요청을 보냈습니다"
+                                                                                var alertContent =  " 님이 친구 요청을 보냈습니다"
                                                                                 var alertReceiverIdx = receiverIdx
                                                                                 var alertType : Long = 0
-
-                                                                                var alert = AlertClass(alertIdx, alertContent, alertReceiverIdx, alertType)
+                                                                                val alertName = MyApplication.loginedUserInfo.userName
+                                                                                var alert = AlertClass(alertIdx, alertContent, alertReceiverIdx, alertType,alertName)
 
                                                                                 AlertRepository.addAlertInfo(alert){
                                                                                     Toast.makeText(

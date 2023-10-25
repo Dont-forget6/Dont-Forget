@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,17 +22,17 @@ import com.test.dontforget.MyApplication
 import com.test.dontforget.R
 import com.test.dontforget.Repository.JoinFriendRepository
 import com.test.dontforget.Repository.UserRepository
-import com.test.dontforget.Util.LoadingDialog
 import com.test.dontforget.databinding.DialogNormalBinding
 import com.test.dontforget.databinding.FragmentFriendsDetailBinding
 import com.test.dontforget.databinding.RowFriendsDetailBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class FriendsDetailFragment : Fragment() {
     lateinit var binding: FragmentFriendsDetailBinding
     lateinit var mainActivity: MainActivity
 
     lateinit var viewModel: FriendsDetailViewModel
-    lateinit var loadingDialog: LoadingDialog
 
     // 친구 이메일
     lateinit var _FName : String
@@ -93,8 +94,7 @@ class FriendsDetailFragment : Fragment() {
         viewModel.getCategoryAll()
 
         binding.run {
-            loadingDialog = LoadingDialog(requireContext())
-            loadingDialog.show()
+
             viewModel.friendUserImage.observe(mainActivity) {
                 _FImage = it
                 // 프로필 사진
@@ -102,14 +102,12 @@ class FriendsDetailFragment : Fragment() {
                     if (it.isSuccessful) {
                         val fileUri = it.result
                         Glide.with(mainActivity).load(fileUri).into(binding.imageViewFriendsDetail)
-                        loadingDialog.dismiss()
                     } else {
                         binding.imageViewFriendsDetail.setImageResource(R.drawable.ic_person_24px)
-                        loadingDialog.dismiss()
                     }
                 }
             }
-
+            loadSampleData()
             // 툴바
             toolbarFriendsDetail.run {
                 title = "친구"
@@ -323,6 +321,26 @@ class FriendsDetailFragment : Fragment() {
         override fun onBindViewHolder(holder: ViewHolderFD, position: Int) {
             holder.textViewRowFriendsDetailCategory.text = MCL[position].categoryName
             holder.textViewRowFriendsDetailCategory.setTextColor(MCL[position].categoryColor.toInt())
+        }
+    }
+
+    private fun loadSampleData(){
+        lifecycleScope.launch {
+            showSampleData(isLoading = true)
+            delay(1500)
+            showSampleData(isLoading = false)
+        }
+    }
+    private fun showSampleData(isLoading:Boolean){
+        if(isLoading){
+            binding.shimmerLayoutFriendsDetail.startShimmer()
+            binding.shimmerLayoutFriendsDetail.visibility = View.VISIBLE
+            binding.imageViewFriendsDetail.visibility = View.GONE
+        }else{
+            binding.shimmerLayoutFriendsDetail.stopShimmer()
+            binding.shimmerLayoutFriendsDetail.visibility = View.GONE
+            binding.imageViewFriendsDetail.visibility = View.VISIBLE
+
         }
     }
 }
