@@ -11,12 +11,12 @@ def googleMapApiKey = properties.getProperty('google.map.key')
 
 android {
     namespace 'com.test.dontforget'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.test.dontforget"
-        minSdk 24
-        targetSdk 33
+        minSdk 26
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         buildConfigField "String", "SAMPLE_API_KEY", properties["google.map.key"]
@@ -54,7 +54,7 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -104,5 +104,9 @@ dependencies {
 
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+
+    // custom calendar
+    implementation 'com.kizitonwose.calendar:view:2.4.0'
 
 }

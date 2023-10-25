@@ -64,14 +64,42 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <CalendarView
-                android:id="@+id/calendarView_mainHomeFragment"
-                style="@style/Theme.DontForget.Calendar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:id="@+id/calendar_layout_mainHomeFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <include
+                    android:id="@+id/headerContainer"
+                    layout="@layout/calendar_month_header_layout" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_vertical_small2" />
+
+                <include
+                    android:id="@+id/titlesContainer"
+                    layout="@layout/calendar_day_titles_container" />
+
+                <com.kizitonwose.calendar.view.CalendarView
+                    android:id="@+id/calendarView_mainHomeFragment"
+                    style="@style/Theme.DontForget.Calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cv_dayViewResource="@layout/calendar_day_layout" />
+
+                <com.kizitonwose.calendar.view.WeekCalendarView
+                    android:id="@+id/weekCalendarView_mainHomeFragment"
+                    style="@style/Theme.DontForget.Calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cv_dayViewResource="@layout/calendar_day_layout" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_mainHomeFragment_category"
@@ -82,7 +110,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/calendarView_mainHomeFragment"
+                app:layout_constraintTop_toBottomOf="@id/calendar_layout_mainHomeFragment"
                 tools:listitem="@layout/row_home_category_tab" />
 
             <androidx.recyclerview.widget.RecyclerView
