@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.android.volley.Response
+import com.bumptech.glide.Glide
 import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
@@ -48,7 +49,6 @@ class AppWidget : AppWidgetProvider() {
 
 fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     val views: RemoteViews = RemoteViews(context.packageName, R.layout.app_widget).apply {
-        // 이미지뷰
         setImageViewResource(R.id.appwidget_imageview, R.drawable.ic_pencil)
         setOnClickPendingIntent(R.id.ll_appwidget, getIntent(context))
     }
