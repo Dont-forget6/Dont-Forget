@@ -47,5 +47,7 @@ class MyApplication :Application(){
         var categoryColor = ""
         var categoryFontColor = ""
 
+        // 위젯으로 실행시
+        var isStartedWithWidget = false
     }
 }
