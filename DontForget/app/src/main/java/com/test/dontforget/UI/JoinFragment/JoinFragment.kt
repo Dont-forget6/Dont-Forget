@@ -97,7 +97,9 @@ class JoinFragment : Fragment() {
                     checkBoolean = checkValidation(textInputLayoutJoinIntroduce,"자기소개")
                 }
             }
-
+            textViewJoinTerms.setOnClickListener {
+                mainActivity.replaceFragment(MainActivity.JOIN_TERM_FRAGMENT,true,null)
+            }
             // 회원가입 버튼 클릭
             buttonJoin.setOnClickListener {
                 val email = textInputLayoutJoinEmail.editText?.text.toString()
@@ -110,32 +112,35 @@ class JoinFragment : Fragment() {
                 } else {
                     "image/img_${System.currentTimeMillis()}.jpg"
                 }
+                var checkTerm = checkBoxJoinTerms.isChecked
                 if (checkBoolean && userType == MyApplication.EMAIL_LOGIN) {
                     if (password == passwordCheck) {
-                        firebaseUtil.createAccount(email, password) { firebaseCheck ->
-                            var currentUser = firebaseAuth.currentUser
-                            var userId = currentUser?.uid
-                            if (firebaseCheck == "성공") {
-                                if (userId != null) {
-                                    makeUser(userName,email,userImage,userIntroduce,userId)
+                        if(checkTerm){
+                            firebaseUtil.createAccount(email, password) { firebaseCheck ->
+                                var currentUser = firebaseAuth.currentUser
+                                var userId = currentUser?.uid
+                                if (firebaseCheck == "성공") {
+                                    if (userId != null) {
+                                        makeUser(userName,email,userImage,userIntroduce,userId)
+                                    }
                                 }
-                            }
-                            // 이미 등록된 이메일일 경우
-                            else if(firebaseCheck.contains( "com.google.firebase.auth.FirebaseAuthUserCollisionException: The email address is already in use by another account.")) {
-                                val dialogNormalBinding =
-                                    DialogNormalBinding.inflate(layoutInflater)
-                                val builder = MaterialAlertDialogBuilder(mainActivity)
-                                dialogNormalBinding.textViewDialogNormalTitle.text = "중복확인"
-                                dialogNormalBinding.textViewDialogNormalContent.text = "이미 존재하는 이메일 입니다"
-                                builder.setView(dialogNormalBinding.root)
-                                mainActivity.hideKeyboard()
-                                builder.setPositiveButton("확인") { dialog, which ->
-                                    textInputEditTextJoinEmail.requestFocus()
+                                // 이미 등록된 이메일일 경우
+                                else if(firebaseCheck.contains( "com.google.firebase.auth.FirebaseAuthUserCollisionException: The email address is already in use by another account.")) {
+                                    val dialogNormalBinding =
+                                        DialogNormalBinding.inflate(layoutInflater)
+                                    val builder = MaterialAlertDialogBuilder(mainActivity)
+                                    dialogNormalBinding.textViewDialogNormalTitle.text = "중복확인"
+                                    dialogNormalBinding.textViewDialogNormalContent.text = "이미 존재하는 이메일 입니다"
+                                    builder.setView(dialogNormalBinding.root)
+                                    mainActivity.hideKeyboard()
+                                    builder.setPositiveButton("확인") { dialog, which ->
+                                        textInputEditTextJoinEmail.requestFocus()
+                                    }
+                                    builder.show()
                                 }
-                                builder.show()
                             }
                         }
-
+                        else Toast.makeText(requireContext(),"이용약관에 동의해주세요.",Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(requireContext(), "비밀번호가 서로 다릅니다.", Toast.LENGTH_SHORT).show()
                     }
@@ -144,7 +149,8 @@ class JoinFragment : Fragment() {
                     var userId = firebaseAuth.currentUser?.uid
 
                     if (userId != null) {
-                        makeUser(userName,email,userImage,userIntroduce,userId)
+                        if(checkTerm) makeUser(userName,email,userImage,userIntroduce,userId)
+                        else Toast.makeText(requireContext(),"이용약관에 동의해주세요.",Toast.LENGTH_SHORT).show()
                     }
                 }
                 else if(!checkBoolean){
