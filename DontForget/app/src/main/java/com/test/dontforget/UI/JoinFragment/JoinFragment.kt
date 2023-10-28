@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -72,30 +73,26 @@ class JoinFragment : Fragment() {
 
 
             // 입력 유효성 검사
-            textInputLayoutJoinEmail.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinEmail,"이메일")
-                }
+//            textInputLayoutJoinEmail.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+//                if (!hasFocus) {
+//                    checkBoolean = checkValidation(textInputLayoutJoinEmail,"이메일")
+//                }
+//            }
+            textInputLayoutJoinEmail.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinEmail,"이메일")
             }
-            textInputLayoutJoinPassword.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinPassword,"비밀번호")
-                }
+            textInputLayoutJoinPassword.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinPassword,"비밀번호")
             }
-            textInputLayoutJoinPasswordCheck.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinPasswordCheck,"비밀번호 확인")
-                }
+            textInputLayoutJoinPasswordCheck.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinPasswordCheck,"비밀번호 확인")
             }
-            textInputLayoutJoinName.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinName,"이름")
-                }
+            textInputLayoutJoinName.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinName,"이름")
             }
-            textInputLayoutJoinIntroduce.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinIntroduce,"자기소개")
-                }
+
+            textInputLayoutJoinIntroduce.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinIntroduce,"자기소개")
             }
             textViewJoinTerms.setOnClickListener {
                 mainActivity.replaceFragment(MainActivity.JOIN_TERM_FRAGMENT,true,null)
@@ -222,6 +219,9 @@ class JoinFragment : Fragment() {
         }
         return false
     }
+
+
+
     // firebase Realtime에 추가
     fun makeUser(userName:String,userEmail:String,userImage:String,userIntroduce:String,userId:String){
         UserRepository.getUserInfo {
