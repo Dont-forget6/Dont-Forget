@@ -288,7 +288,7 @@ class TodoDetailPublicOwnerFragment : Fragment() {
                 startAutocomplete.launch(intent)
             }
 
-            buttonTodoDetailPersonalOwnerRoute.setOnClickListener {
+            buttonTodoDetailPublicOwnerRoute.setOnClickListener {
 
                 if(textViewTodoDetailPublicOwnerLocation.text == "위치 없음") {
                     var dialogNormalBinding = DialogNormalBinding.inflate(layoutInflater)

@@ -181,16 +181,20 @@
                 android:gravity="end"
                 android:text="서면역"
                 android:textSize="@dimen/font_size_medium" />
-
-            <Button
-                android:id="@+id/button_todoDetailPublic_route"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Widget.Material3.Button.IconButton.Filled"
-                android:layout_marginLeft="@dimen/margin_vertical_small1"
-                android:drawableLeft="@drawable/ic_route"
-                android:layout_gravity="center"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/button_todoDetailPublic_route"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="@dimen/margin_vertical_small1"
+            android:drawableLeft="@drawable/ic_route"
+            android:drawableTint="@color/colorPrimary"
+            android:fontFamily="@font/scdream_bold"
+            android:text="길찾기"
+            app:iconPadding="2dp" />
 
         <LinearLayout
             android:id="@+id/linearlayout_todoDetailPublic_memo"
