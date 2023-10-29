@@ -75,6 +75,7 @@ class MainHomeFragment : Fragment() {
     private var selectedDate = today
     private var monthToWeek = true
 
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -190,7 +191,7 @@ class MainHomeFragment : Fragment() {
                 calendarWeekMode()
             }
 
-            binding.headerContainer.headerGoToday.setOnClickListener {
+            headerContainer.headerGoToday.setOnClickListener {
                 if (selectedDate != today) {
                     if (monthToWeek) {
                         calendarViewMainHomeFragment.scrollToDate(today)
@@ -206,6 +207,11 @@ class MainHomeFragment : Fragment() {
                         weekCalendarViewMainHomeFragment.scrollToDate(today)
                     }
                 }
+            }
+
+            if (MyApplication.selectedTheme == ThemeUtil.LIGHT_MODE) {
+                headerContainer.headerGoToday.setChipBackgroundColorResource(R.color.white)
+                headerContainer.chipWeekMode.setChipBackgroundColorResource(R.color.white)
             }
         }
 
