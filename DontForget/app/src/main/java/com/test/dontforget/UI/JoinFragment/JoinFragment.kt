@@ -198,13 +198,10 @@ class JoinFragment : Fragment() {
                 }
 
             }else if(type == "비밀번호" || type == "비밀번호 확인"){
-                val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]*\$".toRegex()
-                if(check.length < 6){
-                    textInputLayout.error = "6자리이상 입력해주세요."
-                }else if(!check.matches(passwordPattern)){
-                    textInputLayout.error = "6~16자의 영문 대/소문자, 숫자를 사용해 주세요."
-                }
-                else{
+                val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@#$%^&+=!]*\$"
+                if (check.length < 6 || !check.matches(passwordPattern.toRegex())) {
+                        textInputLayout.error = "6~16자의 영문 대/소문자, 숫자, 그리고 특수문자(@, #, $, %, ^, &, +, =, !) 중 2개를 조합해서 사용하세요."
+                } else {
                     textInputLayout.error = null
                     textInputLayout.isErrorEnabled = false
                     return true
