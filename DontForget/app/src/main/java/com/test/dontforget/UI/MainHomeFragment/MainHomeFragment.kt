@@ -31,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
+import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.core.atStartOfMonth
@@ -74,7 +75,10 @@ class MainHomeFragment : Fragment() {
     private val today = LocalDate.now()
     private var selectedDate = today
     private var monthToWeek = true
+    private var nowMonth = YearMonth.now()
+    private var nowWeek = selectedDate
 
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -190,7 +194,7 @@ class MainHomeFragment : Fragment() {
                 calendarWeekMode()
             }
 
-            binding.headerContainer.headerGoToday.setOnClickListener {
+            headerContainer.headerGoToday.setOnClickListener {
                 if (selectedDate != today) {
                     if (monthToWeek) {
                         calendarViewMainHomeFragment.scrollToDate(today)
@@ -207,6 +211,31 @@ class MainHomeFragment : Fragment() {
                     }
                 }
             }
+
+            if (MyApplication.selectedTheme == ThemeUtil.LIGHT_MODE) {
+                headerContainer.headerGoToday.setChipBackgroundColorResource(R.color.white)
+                headerContainer.chipWeekMode.setChipBackgroundColorResource(R.color.white)
+            }
+
+            headerContainer.btnBeforeMonth.setOnClickListener {
+                if (headerContainer.chipWeekMode.text == "월") {
+                    calendarViewMainHomeFragment.scrollToMonth(nowMonth.minusMonths(1))
+                    nowMonth = nowMonth.minusMonths(1)
+                } else {
+                    weekCalendarViewMainHomeFragment.scrollToWeek(nowWeek.minusWeeks(1))
+                    nowWeek = nowWeek.minusWeeks(1)
+                }
+            }
+            headerContainer.btnNextMonth.setOnClickListener {
+                if (headerContainer.chipWeekMode.text == "월") {
+                    calendarViewMainHomeFragment.scrollToMonth(nowMonth.plusMonths(1))
+                    nowMonth = nowMonth.plusMonths(1)
+                } else {
+                    weekCalendarViewMainHomeFragment.scrollToWeek(nowWeek.plusWeeks(1))
+                    nowWeek = nowWeek.plusWeeks(1)
+                }
+
+            }
         }
 
 
@@ -219,13 +248,20 @@ class MainHomeFragment : Fragment() {
             binding.weekCalendarViewMainHomeFragment.scrollToWeek(targetDate)
             binding.headerContainer.chipWeekMode.text = "주"
             monthToWeek = false
+            nowMonth = targetDate.yearMonth
         } else {
-            val targetMonth =
+            var targetMonth =
                 binding.weekCalendarViewMainHomeFragment.findLastVisibleDay()?.date?.yearMonth
                     ?: return
+            val firstDay = binding.weekCalendarViewMainHomeFragment.findFirstVisibleDay()?.date?.dayOfMonth
+            val lastDay = binding.weekCalendarViewMainHomeFragment.findLastVisibleDay()?.date?.dayOfMonth
+            if(firstDay!! > lastDay!!) {
+                targetMonth = targetMonth.minusMonths(1)
+            }
             binding.calendarViewMainHomeFragment.scrollToMonth(targetMonth)
             binding.headerContainer.chipWeekMode.text = "월"
             monthToWeek = true
+            nowWeek = targetMonth.atStartOfMonth()
         }
 
         val weekHeight = binding.weekCalendarViewMainHomeFragment.height

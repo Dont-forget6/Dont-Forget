@@ -23,7 +23,7 @@
             android:gravity="center"
             android:padding="4dp"
             android:text="2023년"
-            android:textSize="@dimen/font_size_big"
+            android:textSize="@dimen/font_size_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/headerMonthTextView"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,25 +36,19 @@
             android:fontFamily="@font/scdream_regular"
             android:padding="4dp"
             android:text="10월"
-            android:textSize="@dimen/font_size_big"
+            android:textSize="@dimen/font_size_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
+    <com.google.android.material.chip.Chip
         android:id="@+id/headerGoToday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:background="@drawable/background_today"
         android:fontFamily="@font/scdream_regular"
-        android:gravity="center"
-        android:padding="@dimen/margin_vertical_small2"
         android:text="Today"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_size_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,11 +57,30 @@
         android:id="@+id/chip_weekMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
         android:fontFamily="@font/scdream_regular"
         android:text="월"
         app:layout_constraintBottom_toBottomOf="@+id/headerGoToday"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/headerGoToday" />
+
+    <ImageView
+        android:id="@+id/btn_before_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_vertical_small1"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
+        app:srcCompat="@drawable/navigate_before_24px" />
+
+    <ImageView
+        android:id="@+id/btn_next_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_vertical_small1"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
+        app:srcCompat="@drawable/navigate_next_24px" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
