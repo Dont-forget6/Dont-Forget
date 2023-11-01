@@ -1,21 +1,29 @@
 package com.test.dontforget.UI.MyPageModifyFragment
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +62,8 @@ class MyPageModifyFragment : Fragment() {
     // 업로드할 이미지의 Uri
     var uploadUri: Uri? = null
     lateinit var user : UserClass
+    @SuppressLint("IntentReset")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,13 +116,17 @@ class MyPageModifyFragment : Fragment() {
                     dialog.dismiss()
                 }
                 dialogMypageProfileBinding.buttonMyPageAlbum.setOnClickListener {
-                    // 앨범에서 사진을 선택할 수 있는 Activity를 실행한다.
-                    val newIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                    newIntent.setType("image/*")
-                    val mimeType = arrayOf("image/*")
-                    newIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType)
-                    albumLauncher.launch(newIntent)
-                    dialog.dismiss()
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES)
+                        != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                            1000
+                        )
+                        Toast.makeText(requireActivity(),"사진 및 동영상 권한을 허용해주세요",Toast.LENGTH_LONG).show()
+                    } else {
+                        albumImage()
+                        dialog.dismiss()
+                    }
                 }
                 dialog.show()
             }
@@ -125,7 +139,6 @@ class MyPageModifyFragment : Fragment() {
                     "None".toUri() -> "None"
                     else -> "image/img_${System.currentTimeMillis()}.jpg"
                 }
-                Log.e("으악",newImage)
                 // 이미지가 변경되지 않으면 업로드하지 않고 이전 이미지를 사용
                 if (newImage != user.userImage) {
                     UserRepository.setUploadProfile(newImage, uploadUri!!) {}
@@ -435,4 +448,29 @@ class MyPageModifyFragment : Fragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == 1000) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                albumImage()
+            } else {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", "com.test.dontforget", null)
+                intent.data = uri
+                startActivity(intent)
+            }
+        }
+    }
+    fun albumImage(){
+        // 앨범에서 사진을 선택할 수 있는 Activity를 실행한다.
+        val newIntent =
+            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        // 실행할 액티비티의 마임타입 설정(이미지로 설정해준다)
+        newIntent.type = "image/*"
+        // 선택할 파일의 타입을 지정(안드로이드  OS가 이미지에 대한 사전 작업을 할 수 있도록)
+        val mimeType = arrayOf("image/*")
+        newIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType)
+        // 액티비티를 실행한다.
+        albumLauncher.launch(newIntent)// 사용자가 권한을 허용한 경우 실행할 작업을 수행합니다.
+    }
 }
