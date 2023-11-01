@@ -1,14 +1,25 @@
 package com.test.dontforget.UI.MainHomeFragment
 
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,19 +30,36 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.kizitonwose.calendar.core.CalendarDay
+import com.kizitonwose.calendar.core.DayPosition
+import com.kizitonwose.calendar.core.Week
+import com.kizitonwose.calendar.core.WeekDay
+import com.kizitonwose.calendar.core.WeekDayPosition
+import com.kizitonwose.calendar.core.atStartOfMonth
+import com.kizitonwose.calendar.core.daysOfWeek
+import com.kizitonwose.calendar.core.yearMonth
+import com.kizitonwose.calendar.view.MonthDayBinder
+import com.kizitonwose.calendar.view.ViewContainer
+import com.kizitonwose.calendar.view.WeekDayBinder
 import com.test.dontforget.DAO.TodoClass
 import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
 import com.test.dontforget.Repository.TodoRepository
+import com.test.dontforget.UI.TodoAddFragment.TodoAddActivity
 import com.test.dontforget.Util.LoadingDialog
 import com.test.dontforget.Util.ThemeUtil
+import com.test.dontforget.databinding.CalendarDayLayoutBinding
 import com.test.dontforget.databinding.FragmentMainHomeBinding
 import com.test.dontforget.databinding.RowHomeCategoryBinding
 import com.test.dontforget.databinding.RowHomeCategoryTabBinding
 import com.test.dontforget.databinding.RowHomeMemoSearchBinding
 import com.test.dontforget.databinding.RowHomeTodoBinding
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
@@ -45,11 +73,16 @@ class MainHomeFragment : Fragment() {
 
     var selectedCategoryPosition = 0
     lateinit var memoList: List<TodoClass>
-    lateinit var selectedDate: String
 
+    private val today = LocalDate.now()
+    private var selectedDate = today
+    private var monthToWeek = true
+    private var nowMonth = YearMonth.now()
+    private var nowWeek = selectedDate
+
+    @SuppressLint("ResourceType")
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         mainActivity = activity as MainActivity
         binding = FragmentMainHomeBinding.inflate(inflater, container, false)
@@ -96,39 +129,37 @@ class MainHomeFragment : Fragment() {
                     binding.recyclerViewMainHomeFragmentMemoSearch.adapter?.notifyDataSetChanged()
                 }
 
-                onFocusChangeListener =
-                    View.OnFocusChangeListener { _, hasFocus ->
-                        if (hasFocus) {
-                            mainHomeViewModel.getTodo(
-                                categoryIdxList
-                            )
-                            textInputLayoutMainHomeFragment.run {
-                                endIconMode = TextInputLayout.END_ICON_CUSTOM
-                                setEndIconDrawable(R.drawable.ic_close_24px)
-                                setEndIconOnClickListener {
-                                    val inputMethodManager =
-                                        mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    inputMethodManager.hideSoftInputFromWindow(
-                                        textInputEditTextMainHomeFragment.windowToken,
-                                        0
-                                    )
-                                    textInputEditTextMainHomeFragment.text = null
-                                    textInputEditTextMainHomeFragment.clearFocus()
-                                }
+                onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        mainHomeViewModel.getTodo(
+                            categoryIdxList
+                        )
+                        textInputLayoutMainHomeFragment.run {
+                            endIconMode = TextInputLayout.END_ICON_CUSTOM
+                            setEndIconDrawable(R.drawable.ic_close_24px)
+                            setEndIconOnClickListener {
+                                val inputMethodManager =
+                                    mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                inputMethodManager.hideSoftInputFromWindow(
+                                    textInputEditTextMainHomeFragment.windowToken, 0
+                                )
+                                textInputEditTextMainHomeFragment.text = null
+                                textInputEditTextMainHomeFragment.clearFocus()
                             }
-                            scrollViewMainHomeFragment.visibility = View.GONE
-                            constraintLayoutMainHomeFragment.visibility = View.VISIBLE
-                        } else {
-                            mainHomeViewModel.getTodoByDate(
-                                selectedDate,
-                                mainHomeViewModel.getCategoryAll(MyApplication.loginedUserInfo.userIdx, loadingDialog)
-                            )
-                            textInputLayoutMainHomeFragment.endIconMode =
-                                TextInputLayout.END_ICON_NONE
-                            scrollViewMainHomeFragment.visibility = View.VISIBLE
-                            constraintLayoutMainHomeFragment.visibility = View.GONE
                         }
+                        scrollViewMainHomeFragment.visibility = View.GONE
+                        constraintLayoutMainHomeFragment.visibility = View.VISIBLE
+                    } else {
+                        mainHomeViewModel.getTodoByDate(
+                            selectedDate.toString(), mainHomeViewModel.getCategoryAll(
+                                MyApplication.loginedUserInfo.userIdx, loadingDialog
+                            )
+                        )
+                        textInputLayoutMainHomeFragment.endIconMode = TextInputLayout.END_ICON_NONE
+                        scrollViewMainHomeFragment.visibility = View.VISIBLE
+                        constraintLayoutMainHomeFragment.visibility = View.GONE
                     }
+                }
             }
 
             recyclerViewMainHomeFragmentCategory.run {
@@ -144,43 +175,301 @@ class MainHomeFragment : Fragment() {
             }
 
             buttonMainHomeFragment.setOnClickListener {
-                mainActivity.replaceFragment(MainActivity.TODO_ADD_FRAGMENT, true, null)
+//                mainActivity.replaceFragment(MainActivity.TODO_ADD_FRAGMENT, true, null)
+                val todoAddintent = Intent(mainActivity, TodoAddActivity::class.java)
+                startActivity(todoAddintent)
+                mainActivity.finish()
             }
 
-            setCalendar()
+            val daysOfWeek = daysOfWeek()
+            val titlesContainer = binding.titlesContainer.root
+            titlesContainer.children.map { it as TextView }.forEachIndexed { index, textView ->
+                val dayOfWeek = daysOfWeek[index]
+                val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                textView.text = title
+            }
+
+            val currentMonth = YearMonth.now()
+            val startMonth = currentMonth.minusMonths(100)
+            val endMonth = currentMonth.plusMonths(100)
+            setupMonthCalendar(startMonth, endMonth, currentMonth, daysOfWeek)
+            setupWeekCalendar(startMonth, endMonth, currentMonth, daysOfWeek)
+
+            binding.headerContainer.chipWeekMode.setOnClickListener {
+                calendarWeekMode()
+            }
+
+            headerContainer.headerGoToday.setOnClickListener {
+                if (selectedDate != today) {
+                    if (monthToWeek) {
+                        calendarViewMainHomeFragment.scrollToDate(today)
+                        dateClicked(today)
+                    } else {
+                        weekCalendarViewMainHomeFragment.scrollToDate(today)
+                        dateClicked(today)
+                    }
+                } else {
+                    if (monthToWeek) {
+                        calendarViewMainHomeFragment.scrollToDate(today)
+                    } else {
+                        weekCalendarViewMainHomeFragment.scrollToDate(today)
+                    }
+                }
+            }
+
+            if (MyApplication.selectedTheme == ThemeUtil.LIGHT_MODE) {
+                headerContainer.headerGoToday.setChipBackgroundColorResource(R.color.white)
+                headerContainer.chipWeekMode.setChipBackgroundColorResource(R.color.white)
+            }
+
+            headerContainer.btnBeforeMonth.setOnClickListener {
+                if (headerContainer.chipWeekMode.text == "월") {
+                    calendarViewMainHomeFragment.scrollToMonth(nowMonth.minusMonths(1))
+                    nowMonth = nowMonth.minusMonths(1)
+                } else {
+                    weekCalendarViewMainHomeFragment.scrollToWeek(nowWeek.minusWeeks(1))
+                    nowWeek = nowWeek.minusWeeks(1)
+                }
+            }
+            headerContainer.btnNextMonth.setOnClickListener {
+                if (headerContainer.chipWeekMode.text == "월") {
+                    calendarViewMainHomeFragment.scrollToMonth(nowMonth.plusMonths(1))
+                    nowMonth = nowMonth.plusMonths(1)
+                } else {
+                    weekCalendarViewMainHomeFragment.scrollToWeek(nowWeek.plusWeeks(1))
+                    nowWeek = nowWeek.plusWeeks(1)
+                }
+
+            }
         }
 
 
         return binding.root
     }
 
-    private fun setCalendar() {
-        binding.run {
-            calendarViewMainHomeFragment.setOnDateChangeListener { view, year, month, dayOfMonth ->
-                selectedCategoryPosition = 0
-                val formattedMonth = String.format("%02d", month + 1)
-                selectedDate = "${year}-${formattedMonth}-${dayOfMonth}"
+    private fun calendarWeekMode() {
+        if (monthToWeek) {
+            val targetDate = selectedDate ?: return
+            binding.weekCalendarViewMainHomeFragment.scrollToWeek(targetDate)
+            binding.headerContainer.chipWeekMode.text = "주"
+            monthToWeek = false
+            nowMonth = targetDate.yearMonth
+        } else {
+            var targetMonth =
+                binding.weekCalendarViewMainHomeFragment.findLastVisibleDay()?.date?.yearMonth
+                    ?: return
+            val firstDay = binding.weekCalendarViewMainHomeFragment.findFirstVisibleDay()?.date?.dayOfMonth
+            val lastDay = binding.weekCalendarViewMainHomeFragment.findLastVisibleDay()?.date?.dayOfMonth
+            if(firstDay!! > lastDay!!) {
+                targetMonth = targetMonth.minusMonths(1)
+            }
+            binding.calendarViewMainHomeFragment.scrollToMonth(targetMonth)
+            binding.headerContainer.chipWeekMode.text = "월"
+            monthToWeek = true
+            nowWeek = targetMonth.atStartOfMonth()
+        }
 
-                // 고른 날에 맞는 todo가져오기
-                mainHomeViewModel.getTodoByDate(
-                    selectedDate,
-                    mainHomeViewModel.getCategoryAll(MyApplication.loginedUserInfo.userIdx, loadingDialog)
-                )
+        val weekHeight = binding.weekCalendarViewMainHomeFragment.height
+        val visibleMonthHeight =
+            weekHeight * binding.calendarViewMainHomeFragment.findFirstVisibleMonth()?.weekDays.orEmpty()
+                .count()
+
+        val oldHeight = if (monthToWeek) weekHeight else visibleMonthHeight
+        val newHeight = if (monthToWeek) visibleMonthHeight else weekHeight
+
+        val animator = ValueAnimator.ofInt(oldHeight, newHeight)
+        animator.addUpdateListener { anim ->
+            binding.calendarViewMainHomeFragment.updateLayoutParams {
+                height = anim.animatedValue as Int
+            }
+            binding.calendarViewMainHomeFragment.children.forEach { child ->
+                child.requestLayout()
+            }
+        }
+
+        animator.doOnStart {
+            if (monthToWeek) {
+                binding.calendarViewMainHomeFragment.isVisible = true
+                binding.weekCalendarViewMainHomeFragment.isGone = true
+            }
+        }
+        animator.doOnEnd {
+            if (!monthToWeek) {
+                binding.calendarViewMainHomeFragment.isGone = true
+                binding.weekCalendarViewMainHomeFragment.isVisible = true
+            } else {
+                binding.calendarViewMainHomeFragment.updateLayoutParams {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+            }
+            updateTitle()
+        }
+        animator.duration = 250
+        animator.start()
+    }
+
+    // 월 달력
+    private fun setupMonthCalendar(
+        startMonth: YearMonth,
+        endMonth: YearMonth,
+        currentMonth: YearMonth,
+        daysOfWeek: List<DayOfWeek>,
+    ) {
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            // Will be set when this container is bound. See the dayBinder.
+            lateinit var day: CalendarDay
+            val textView = CalendarDayLayoutBinding.bind(view).calendarDayText
+
+            init {
+                view.setOnClickListener {
+                    if (day.position == DayPosition.MonthDate) {
+                        dateClicked(date = day.date)
+                    }
+                }
+            }
+        }
+        binding.calendarViewMainHomeFragment.dayBinder = object : MonthDayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, data: CalendarDay) {
+                container.day = data
+                bindDate(data.date, container.textView, data.position == DayPosition.MonthDate)
+            }
+        }
+        binding.calendarViewMainHomeFragment.monthScrollListener = { updateTitle() }
+        binding.calendarViewMainHomeFragment.setup(startMonth, endMonth, daysOfWeek.first())
+        binding.calendarViewMainHomeFragment.scrollToMonth(currentMonth)
+    }
+
+    // 주 달력
+    private fun setupWeekCalendar(
+        startMonth: YearMonth,
+        endMonth: YearMonth,
+        currentMonth: YearMonth,
+        daysOfWeek: List<DayOfWeek>,
+    ) {
+        class WeekDayViewContainer(view: View) : ViewContainer(view) {
+            // Will be set when this container is bound. See the dayBinder.
+            lateinit var day: WeekDay
+            val textView = CalendarDayLayoutBinding.bind(view).calendarDayText
+
+            init {
+                view.setOnClickListener {
+                    if (day.position == WeekDayPosition.RangeDate) {
+                        dateClicked(date = day.date)
+                    }
+                }
+            }
+        }
+        binding.weekCalendarViewMainHomeFragment.dayBinder =
+            object : WeekDayBinder<WeekDayViewContainer> {
+                override fun create(view: View): WeekDayViewContainer = WeekDayViewContainer(view)
+                override fun bind(container: WeekDayViewContainer, data: WeekDay) {
+                    container.day = data
+                    bindDate(
+                        data.date, container.textView, data.position == WeekDayPosition.RangeDate
+                    )
+                }
+            }
+        binding.weekCalendarViewMainHomeFragment.weekScrollListener = { updateTitle() }
+        binding.weekCalendarViewMainHomeFragment.setup(
+            startMonth.atStartOfMonth(),
+            endMonth.atEndOfMonth(),
+            daysOfWeek.first(),
+        )
+        binding.weekCalendarViewMainHomeFragment.scrollToWeek(currentMonth.atStartOfMonth())
+    }
+
+    private fun bindDate(date: LocalDate, textView: TextView, isSelectable: Boolean) {
+        textView.text = date.dayOfMonth.toString()
+        if (isSelectable) {
+            when {
+                selectedDate == date -> {
+                    textView.setBackgroundResource(R.drawable.background_select_date)
+                }
+
+                else -> {
+                    textView.background = null
+                }
+            }
+            // 일요일 텍스트 색상 설정
+            if (date.dayOfWeek.value == 7) {
+                textView.setTextColor(Color.RED)
+            }
+            // 토요일 텍스트 색상 설정
+            if (date.dayOfWeek.value == 6) {
+                textView.setTextColor(Color.BLUE)
+            }
+        } else {
+            textView.setTextColor(Color.GRAY)
+            textView.background = null
+        }
+    }
+
+    private fun dateClicked(date: LocalDate) {
+        Log.d("asdasdasd", date.toString())
+
+        val currentSelection = selectedDate
+        if (currentSelection == date) {
+            //selectedDate = null
+            binding.calendarViewMainHomeFragment.notifyDateChanged(currentSelection)
+            binding.weekCalendarViewMainHomeFragment.notifyDateChanged(currentSelection)
+        } else {
+            selectedDate = date
+            binding.calendarViewMainHomeFragment.notifyDateChanged(date)
+            binding.weekCalendarViewMainHomeFragment.notifyDateChanged(date)
+            if (currentSelection != null) {
+                binding.calendarViewMainHomeFragment.notifyDateChanged(currentSelection)
+                binding.weekCalendarViewMainHomeFragment.notifyDateChanged(currentSelection)
+            }
+        }
+        selectedCategoryPosition = 0
+        mainHomeViewModel.getTodoByDate(
+            selectedDate.toString(), mainHomeViewModel.getCategoryAll(
+                MyApplication.loginedUserInfo.userIdx, loadingDialog
+            )
+        )
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateTitle() {
+        val isMonthMode = binding.headerContainer.chipWeekMode.text == "월"
+        if (isMonthMode) {
+            val month =
+                binding.calendarViewMainHomeFragment.findFirstVisibleMonth()?.yearMonth ?: return
+            nowMonth = month
+            binding.headerContainer.headerYearTextView.text = "${month.year}년"
+            binding.headerContainer.headerMonthTextView.text = "${month.month.value}월"
+        } else {
+            val week = binding.weekCalendarViewMainHomeFragment.findFirstVisibleWeek() ?: return
+            val firstDate = week.days.first().date
+            val lastDate = week.days.last().date
+            if (firstDate.yearMonth == lastDate.yearMonth) {
+                binding.headerContainer.headerYearTextView.text = "${firstDate.year}년"
+                binding.headerContainer.headerMonthTextView.text = "${firstDate.month.value}월"
+            } else {
+                binding.headerContainer.headerMonthTextView.text =
+                    "${firstDate.month.value} - ${lastDate.month.value}월"
+                if (firstDate.year == lastDate.year) {
+                    binding.headerContainer.headerYearTextView.text = "${firstDate.year}년"
+                } else {
+                    binding.headerContainer.headerYearTextView.text =
+                        "${firstDate.month.value} - ${lastDate.month.value}월"
+                }
             }
         }
     }
 
     private fun setTodoData() {
-        selectedDate = getCurrentDate()
+        selectedDate = today
         mainHomeViewModel.getTodoByDate(
-            selectedDate,
+            selectedDate.toString(),
             mainHomeViewModel.getCategoryAll(MyApplication.loginedUserInfo.userIdx, loadingDialog)
         )
     }
 
     private fun setTodoDataOtherDay() {
         mainHomeViewModel.getTodoByDate(
-            selectedDate,
+            selectedDate.toString(),
             mainHomeViewModel.getCategoryAll(MyApplication.loginedUserInfo.userIdx, loadingDialog)
         )
     }
@@ -207,8 +496,7 @@ class MainHomeFragment : Fragment() {
                     } else {
                         // 전체 카테고리
                         mainHomeViewModel.getCategoryAll(
-                            MyApplication.loginedUserInfo.userIdx,
-                            loadingDialog
+                            MyApplication.loginedUserInfo.userIdx, loadingDialog
                         )
                     }
                     val position = adapterPosition
@@ -227,9 +515,7 @@ class MainHomeFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryTabViewHolder =
             CategoryTabViewHolder(
                 RowHomeCategoryTabBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                    LayoutInflater.from(parent.context), parent, false
                 )
             )
 
@@ -302,9 +588,7 @@ class MainHomeFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder =
             CategoryViewHolder(
                 RowHomeCategoryBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                    LayoutInflater.from(parent.context), parent, false
                 )
             )
 
@@ -323,8 +607,7 @@ class MainHomeFragment : Fragment() {
                 val todoListForCategory = mainHomeViewModel.getTodoListForCategory(categoryIdx)
                 val isCategoryPublic =
                     mainHomeViewModel.categories2.value?.get(position)?.categoryIsPublic
-                adapter =
-                    TodoRecyclerViewAdapter(todoListForCategory, isCategoryPublic!!)
+                adapter = TodoRecyclerViewAdapter(todoListForCategory, isCategoryPublic!!)
                 layoutManager = LinearLayoutManager(context)
             }
         }
@@ -332,10 +615,8 @@ class MainHomeFragment : Fragment() {
 
     // 할 일
     inner class TodoRecyclerViewAdapter(
-        private val todoList: List<TodoClass>,
-        private val isCategoryPublic: Long
-    ) :
-        RecyclerView.Adapter<TodoRecyclerViewAdapter.TodoViewHolder>() {
+        private val todoList: List<TodoClass>, private val isCategoryPublic: Long
+    ) : RecyclerView.Adapter<TodoRecyclerViewAdapter.TodoViewHolder>() {
 
         inner class TodoViewHolder(private val binding: RowHomeTodoBinding) :
             RecyclerView.ViewHolder(binding.root) {
@@ -343,14 +624,13 @@ class MainHomeFragment : Fragment() {
             val textViewTodo = binding.textViewRowTodo
             val textViewTodoMaker = binding.textViewRowTodoMaker
             val textViewRowTodoLocation = binding.textViewRowTodoLocation
+            val cardViewLocation = binding.cardView
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder =
             TodoViewHolder(
                 RowHomeTodoBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                    LayoutInflater.from(parent.context), parent, false
                 )
             )
 
@@ -365,22 +645,16 @@ class MainHomeFragment : Fragment() {
                     bundle.putLong("todoIdx", todo.todoIdx)
                     if (isCategoryPublic == 0L) {
                         mainActivity.replaceFragment(
-                            MainActivity.TODO_DETAIL_PERSONAL_FRAGMENT,
-                            true,
-                            bundle
+                            MainActivity.TODO_DETAIL_PERSONAL_FRAGMENT, true, bundle
                         )
                     } else {
                         if (MyApplication.loginedUserInfo.userIdx == todo.todoOwnerIdx) {
                             mainActivity.replaceFragment(
-                                MainActivity.TODO_DETAIL_PUBLIC_OWNER_FRAGMENT,
-                                true,
-                                bundle
+                                MainActivity.TODO_DETAIL_PUBLIC_OWNER_FRAGMENT, true, bundle
                             )
                         } else {
                             mainActivity.replaceFragment(
-                                MainActivity.TODO_DETAIL_PUBLIC_FRAGMENT,
-                                true,
-                                bundle
+                                MainActivity.TODO_DETAIL_PUBLIC_FRAGMENT, true, bundle
                             )
                         }
                     }
@@ -396,6 +670,10 @@ class MainHomeFragment : Fragment() {
                 } else {
                     todo.todoLocationName
                 }
+            }
+
+            if (todo.todoLocationName == "위치 없음") {
+                holder.cardViewLocation.visibility = View.GONE
             }
 
             if (todo.todoIsChecked == 0L) {
@@ -430,6 +708,7 @@ class MainHomeFragment : Fragment() {
                     todoLocationName = todo.todoLocationName,
                     todoLocationLatitude = todo.todoLocationLatitude,
                     todoLocationLongitude = todo.todoLocationLongitude,
+                    todoMemo = todo.todoMemo,
                     todoOwnerIdx = todo.todoOwnerIdx,
                     todoOwnerName = todo.todoOwnerName
                 )
@@ -467,14 +746,13 @@ class MainHomeFragment : Fragment() {
             val textViewRowMemoSearchMaker = binding.textViewRowMemoSearchMaker
             val textViewRowMemoSearch = binding.textViewRowMemoSearch
             val textViewLocation = binding.textViewRowMemoSearchLocation
+            val cardViewLocation = binding.cardView
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemoSearchHolder =
             MemoSearchHolder(
                 RowHomeMemoSearchBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                    LayoutInflater.from(parent.context), parent, false
                 )
             )
 
@@ -505,6 +783,10 @@ class MainHomeFragment : Fragment() {
                 }
             }
 
+            if (todo.todoLocationName == "위치 없음") {
+                holder.cardViewLocation.visibility = View.GONE
+            }
+
             holder.textViewRowMemoSearch.run {
                 text = todo.todoContent
                 setOnClickListener {
@@ -512,22 +794,16 @@ class MainHomeFragment : Fragment() {
                     bundle.putLong("todoIdx", todo.todoIdx)
                     if (isCategoryPublic == 0L) {
                         mainActivity.replaceFragment(
-                            MainActivity.TODO_DETAIL_PERSONAL_FRAGMENT,
-                            true,
-                            bundle
+                            MainActivity.TODO_DETAIL_PERSONAL_FRAGMENT, true, bundle
                         )
                     } else {
                         if (MyApplication.loginedUserInfo.userIdx == todo.todoOwnerIdx) {
                             mainActivity.replaceFragment(
-                                MainActivity.TODO_DETAIL_PUBLIC_OWNER_FRAGMENT,
-                                true,
-                                bundle
+                                MainActivity.TODO_DETAIL_PUBLIC_OWNER_FRAGMENT, true, bundle
                             )
                         } else {
                             mainActivity.replaceFragment(
-                                MainActivity.TODO_DETAIL_PUBLIC_FRAGMENT,
-                                true,
-                                bundle
+                                MainActivity.TODO_DETAIL_PUBLIC_FRAGMENT, true, bundle
                             )
                         }
                     }
@@ -550,6 +826,7 @@ class MainHomeFragment : Fragment() {
                     todoLocationName = todo.todoLocationName,
                     todoLocationLatitude = todo.todoLocationLatitude,
                     todoLocationLongitude = todo.todoLocationLongitude,
+                    todoMemo = todo.todoMemo,
                     todoOwnerIdx = todo.todoOwnerIdx,
                     todoOwnerName = todo.todoOwnerName
                 )
@@ -599,45 +876,45 @@ class MainHomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        FirebaseDatabase.getInstance().reference
-            .child("categoryInfo")
+        FirebaseDatabase.getInstance().reference.child("categoryInfo")
             .addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
                     // 데이터를 다시 로드하고 어댑터에 설정
-                    categoryIdxList =
-                        mainHomeViewModel.getCategoryAll(MyApplication.loginedUserInfo.userIdx, loadingDialog)
+                    categoryIdxList = mainHomeViewModel.getCategoryAll(
+                        MyApplication.loginedUserInfo.userIdx, loadingDialog
+                    )
                     val currentDate = getCurrentDate()
-                    if (currentDate == selectedDate) {
+                    if (currentDate == selectedDate.toString()) {
                         setTodoData()
-                    } else{
+                    } else {
                         setTodoDataOtherDay()
                     }
                     mainHomeViewModel.getTodo(categoryIdxList)
-                    setCalendar()
+//                    setCalendar()
                 }
             })
 
-        FirebaseDatabase.getInstance().reference
-            .child("todoInfo")
+        FirebaseDatabase.getInstance().reference.child("todoInfo")
             .addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
                     // 데이터를 다시 로드하고 어댑터에 설정
-                    categoryIdxList =
-                        mainHomeViewModel.getCategoryAll(MyApplication.loginedUserInfo.userIdx, loadingDialog)
+                    categoryIdxList = mainHomeViewModel.getCategoryAll(
+                        MyApplication.loginedUserInfo.userIdx, loadingDialog
+                    )
                     val currentDate = getCurrentDate()
-                    if (currentDate == selectedDate) {
+                    if (currentDate == selectedDate.toString()) {
                         setTodoData()
-                    } else{
+                    } else {
                         setTodoDataOtherDay()
                     }
                     mainHomeViewModel.getTodo(categoryIdxList)
-                    setCalendar()
+//                    setCalendar()
                 }
             })
 

@@ -12,7 +12,7 @@ data class UserClass(
 
 data class Friend(
     val friendIdx : Long,
-    val friendName : String,
+    var friendName : String,
     val friendEmail : String
 )
 

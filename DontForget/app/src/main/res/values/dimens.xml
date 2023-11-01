@@ -20,4 +20,6 @@
     <!--profile image size-->
     <dimen name="image_size_profile">80dp</dimen>
 
+
+
 </resources>

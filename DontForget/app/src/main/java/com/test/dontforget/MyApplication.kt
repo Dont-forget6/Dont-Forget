@@ -46,6 +46,5 @@ class MyApplication :Application(){
         var categoryname = ""
         var categoryColor = ""
         var categoryFontColor = ""
-
     }
 }

@@ -11,14 +11,14 @@ def googleMapApiKey = properties.getProperty('google.map.key')
 
 android {
     namespace 'com.test.dontforget'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.test.dontforget"
-        minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        minSdk 26
+        targetSdk 34
+        versionCode 3
+        versionName "3.0"
         buildConfigField "String", "SAMPLE_API_KEY", properties["google.map.key"]
         manifestPlaceholders = [googleMapApiKey:googleMapApiKey]
 
@@ -26,6 +26,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        viewBinding true
     }
 
     buildTypes {
@@ -53,7 +54,7 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -95,5 +96,17 @@ dependencies {
     // geofencing
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
+
+    // 원형 이미지 뷰
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+
+    // Shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+
+    // custom calendar
+    implementation 'com.kizitonwose.calendar:view:2.4.0'
 
 }

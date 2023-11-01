@@ -2,13 +2,25 @@ package com.test.dontforget
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.transition.MaterialSharedAxis
 import com.test.dontforget.DAO.Friend
 import com.test.dontforget.DAO.UserClass
@@ -21,6 +33,7 @@ import com.test.dontforget.UI.CategoryOptionPublicFragment.CategoryOptionPublicF
 import com.test.dontforget.UI.CategoryOptionPublicOwnerFragment.CategoryOptionPublicOwnerFragment
 import com.test.dontforget.UI.FriendsDetailFragment.FriendsDetailFragment
 import com.test.dontforget.UI.JoinFragment.JoinFragment
+import com.test.dontforget.UI.JoinFragment.JoinTermFragment
 import com.test.dontforget.UI.LoginFindPwFragment.LoginFindPwFragment
 import com.test.dontforget.UI.LoginFragment.LoginFragment
 import com.test.dontforget.UI.MainFragment.MainFragment
@@ -44,6 +57,14 @@ class MainActivity : AppCompatActivity() {
     val permissionList = arrayOf(
         Manifest.permission.POST_NOTIFICATIONS
     )
+
+    private var mFusedLocationProviderClient: FusedLocationProviderClient? = null // 현재 위치를 가져오기 위한 변수
+    lateinit var mLastLocation: Location // 위치 값을 가지고 있는 객체
+    internal lateinit var mLocationRequest: LocationRequest // 위치 정보 요청의 매개변수를 저장하는
+    private val REQUEST_PERMISSION_LOCATION = 123
+
+    var nowLatitude = 0.0
+    var nowLongitude = 0.0
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,7 +112,18 @@ class MainActivity : AppCompatActivity() {
                                     newFriendList as ArrayList<Friend>
                                 )
                                 MyApplication.loginedUserInfo = userInfo
+
                                 replaceFragment(MAIN_FRAGMENT,false,null)
+
+                                // 위젯으로 실행시 글쓰기로 이동
+//                                if(MyApplication.isStartedWithWidget == true){
+////                                    replaceFragment(MAIN_FRAGMENT,false,null)
+//                                    MyApplication.isStartedWithWidget = false
+//                                    replaceFragment(TODO_ADD_FRAGMENT,true,null)
+//                                }else{
+//                                    MyApplication.isStartedWithWidget = false
+//                                    replaceFragment(MAIN_FRAGMENT,false,null)
+//                                }
                             }
                         }
                     }
@@ -111,6 +143,7 @@ class MainActivity : AppCompatActivity() {
         val CATEGORY_OPTION_PUBLIC_OWNER_FRAGMENT = "CategoryOptionPublicOwnerFragment"
         val FRIENDS_DETAIL_FRAGMENT = "FriendsDetailFragment"
         val JOIN_FRAGMENT = "JoinFragment"
+        val JOIN_TERM_FRAGMENT = "JoinTermFragment"
         val LOGIN_FIND_PW_FRAGMENT = "LoginFindPwFragment"
         val LOGIN_FRAGMENT = "LoginFragment"
         val MAIN_FRAGMENT = "MainFragment"
@@ -143,6 +176,7 @@ class MainActivity : AppCompatActivity() {
             CATEGORY_OPTION_PUBLIC_OWNER_FRAGMENT -> CategoryOptionPublicOwnerFragment()
             FRIENDS_DETAIL_FRAGMENT -> FriendsDetailFragment()
             JOIN_FRAGMENT -> JoinFragment()
+            JOIN_TERM_FRAGMENT -> JoinTermFragment()
             LOGIN_FIND_PW_FRAGMENT -> LoginFindPwFragment()
             LOGIN_FRAGMENT -> LoginFragment()
             MAIN_FRAGMENT -> MainFragment()
@@ -225,6 +259,68 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             MyApplication.loginedUserInfo.userFriendList = newFriendList
+        }
+    }
+
+    fun startLocationUpdates() {
+
+        //FusedLocationProviderClient의 인스턴스를 생성.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        // 기기의 위치에 관한 정기 업데이트를 요청하는 메서드 실행
+        // 지정한 루퍼 스레드(Looper.myLooper())에서 콜백(mLocationCallback)으로 위치 업데이트를 요청
+        mFusedLocationProviderClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
+    }
+
+    // 시스템으로 부터 위치 정보를 콜백으로 받음
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            // 시스템에서 받은 location 정보를 onLocationChanged()에 전달
+            locationResult.lastLocation
+            onLocationChanged(locationResult.lastLocation!!)
+        }
+    }
+
+    // 시스템으로 부터 받은 위치정보를 화면에 갱신해주는 메소드
+    fun onLocationChanged(location: Location) {
+        mLastLocation = location
+        nowLatitude = mLastLocation.latitude // 갱신 된 위도
+        nowLongitude = mLastLocation.longitude // 갱신 된 경도
+
+        Log.d("techit", "$nowLatitude, $nowLongitude")
+    }
+
+
+    // 위치 권한이 있는지 확인하는 메서드
+    private fun checkPermissionForLocation(context: Context): Boolean {
+        // Android 6.0 Marshmallow 이상에서는 위치 권한에 추가 런타임 권한이 필요
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                true
+            } else {
+                // 권한이 없으므로 권한 요청 알림 보내기
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_LOCATION)
+                false
+            }
+        } else {
+            true
+        }
+    }
+
+    // 사용자에게 권한 요청 후 결과에 대한 처리 로직
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationUpdates()
+
+            } else {
+                Log.d("techit", "onRequestPermissionsResult() _ 권한 허용 거부")
+                Toast.makeText(this, "권한이 없어 해당 기능을 실행할 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

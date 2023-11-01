@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -41,34 +42,30 @@ class LoginFragment : Fragment() {
         mainActivity = activity as MainActivity
         fragmentLoginBinding.run {
 
-            textInputLayoutLoginEmail.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    var emailCheck = textInputLayoutLoginEmail.editText?.text.toString()
-                    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-                    if (emailCheck.isEmpty()) {
-                        textInputLayoutLoginEmail.error = "이메일을 입력해주세요."
-                    } else if (!emailCheck.matches(emailPattern.toRegex())) {
-                        textInputLayoutLoginEmail.error = "이메일 형식이 잘못되었습니다."
-                    } else {
-                        textInputLayoutLoginEmail.error = null
-                        textInputLayoutLoginEmail.isErrorEnabled = false
-                    }
+            textInputLayoutLoginEmail.editText?.doAfterTextChanged {
+                var emailCheck = textInputLayoutLoginEmail.editText?.text.toString()
+                val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+                if (emailCheck.isEmpty()) {
+                    textInputLayoutLoginEmail.error = "이메일을 입력해주세요."
+                } else if (!emailCheck.matches(emailPattern.toRegex())) {
+                    textInputLayoutLoginEmail.error = "이메일 형식이 잘못되었습니다."
+                } else {
+                    textInputLayoutLoginEmail.error = null
+                    textInputLayoutLoginEmail.isErrorEnabled = false
                 }
             }
-            textInputLayoutLoginPassword.editText?.onFocusChangeListener = View.OnFocusChangeListener{_,hasFocus->
-                if(!hasFocus){
-                    val pwCheck = textInputLayoutLoginPassword.editText?.text.toString()
-                    val pwSize = pwCheck.length
-                    val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]*\$".toRegex()
-                    if(pwSize<6){
-                        textInputLayoutLoginPassword.error = "비밀번호를 6자리 이상 입력해주세요."
-                    }else if(!pwCheck.matches(passwordPattern)){
-                        textInputLayoutLoginPassword.error = "6~16자의 영문 대/소문자, 숫자를 사용해 주세요."
-                    }
-                    else{
-                        textInputLayoutLoginPassword.error = null
-                        textInputLayoutLoginPassword.isErrorEnabled = false
-                    }
+            textInputLayoutLoginPassword.editText?.doAfterTextChanged {
+                val pwCheck = textInputLayoutLoginPassword.editText?.text.toString()
+                val pwSize = pwCheck.length
+                val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]*\$".toRegex()
+                if(pwSize<6){
+                    textInputLayoutLoginPassword.error = "비밀번호를 6자리 이상 입력해주세요."
+                }else if(!pwCheck.matches(passwordPattern)){
+                    textInputLayoutLoginPassword.error = "6~16자의 영문 대/소문자, 숫자를 사용해 주세요."
+                }
+                else{
+                    textInputLayoutLoginPassword.error = null
+                    textInputLayoutLoginPassword.isErrorEnabled = false
                 }
             }
             firebaseAuth = FirebaseAuth.getInstance()
@@ -94,17 +91,17 @@ class LoginFragment : Fragment() {
                 bundle.putString("UserEmail", null)
                 mainActivity.replaceFragment(MainActivity.LOGIN_FIND_PW_FRAGMENT,true,null)
             }
-            buttonLoginGoogleLogin.setOnClickListener {
-                firebaseAuth = FirebaseAuth.getInstance()
-                val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken("194726734690-sm7nu0e0cjr12r4cu39547d10l09rf0r.apps.googleusercontent.com") // 웹 클라이언트 ID
-                    .requestEmail() // 이메일 권한 요청 (선택 사항)
-                    .build()
-
-                val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
-                val signInIntent = googleSignInClient.signInIntent
-                startActivityForResult(signInIntent, 9001)
-            }
+//            buttonLoginGoogleLogin.setOnClickListener {
+//                firebaseAuth = FirebaseAuth.getInstance()
+//                val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                    .requestIdToken("194726734690-sm7nu0e0cjr12r4cu39547d10l09rf0r.apps.googleusercontent.com") // 웹 클라이언트 ID
+//                    .requestEmail() // 이메일 권한 요청 (선택 사항)
+//                    .build()
+//
+//                val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
+//                val signInIntent = googleSignInClient.signInIntent
+//                startActivityForResult(signInIntent, 9001)
+//            }
 
 
         }

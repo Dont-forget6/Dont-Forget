@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Border color and width -->
+    <stroke
+        android:color="@color/colorPrimary"
+        android:width="2dp" /> <!-- Adjust the width as needed -->
+
+    <!-- Padding if necessary -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" />
+
+</shape>

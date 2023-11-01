@@ -45,7 +45,7 @@ import java.util.Date
 
 class TodoAddFragment : Fragment() {
 
-    lateinit var mainActivity: MainActivity
+    lateinit var todoAddActivity: TodoAddActivity
     lateinit var todoAddBinding: FragmentTodoAddBinding
     lateinit var viewModel: TodoAddFragmentViewModel
 
@@ -103,32 +103,34 @@ class TodoAddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mainActivity = activity as MainActivity
+        todoAddActivity = activity as TodoAddActivity
         todoAddBinding = FragmentTodoAddBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(mainActivity).get(TodoAddFragmentViewModel::class.java)
+        viewModel = ViewModelProvider(todoAddActivity).get(TodoAddFragmentViewModel::class.java)
 
 
         viewModel.run {
-            viewModel.name.observe(mainActivity){
+            viewModel.name.observe(todoAddActivity){
                 todoAddBinding.textViewTodoAddCategory.text = String.format("%s",it)
             }
-            viewModel.categoryColor.observe(mainActivity){
+            viewModel.categoryColor.observe(todoAddActivity){
                 todoAddBinding.run {
                     cardviewTodoAddCategory.setCardBackgroundColor(it.toInt())
                     textInputLayoutTodoAdd.boxStrokeColor = it.toInt()
                     textInputLayoutTodoAdd.hintTextColor = ColorStateList.valueOf(it.toInt())
+                    textInputLayoutTodoAddMemo.boxStrokeColor = it.toInt()
+                    textInputLayoutTodoAddMemo.hintTextColor = ColorStateList.valueOf(it.toInt())
                 }
             }
-            viewModel.fontColor.observe(mainActivity){
+            viewModel.fontColor.observe(todoAddActivity){
                 todoAddBinding.textViewTodoAddCategory.setTextColor(it.toInt())
             }
-            viewModel.date.observe(mainActivity){
+            viewModel.date.observe(todoAddActivity){
                 todoAddBinding.textViewTodoAddDate.setText(it)
             }
-            viewModel.time.observe(mainActivity){
+            viewModel.time.observe(todoAddActivity){
                 todoAddBinding.textViewTodoAddAlert.setText(it)
             }
-            viewModel.locate.observe(mainActivity){
+            viewModel.locate.observe(todoAddActivity){
                 todoAddBinding.textViewTodoAddLocation.setText(it)
             }
         }
@@ -140,7 +142,10 @@ class TodoAddFragment : Fragment() {
                 setNavigationIcon(R.drawable.ic_arrow_back_24px)
                 setNavigationOnClickListener {
                     viewModel.resetList()
-                    mainActivity.removeFragment(MainActivity.TODO_ADD_FRAGMENT)
+
+                    val mainIntent = Intent(todoAddActivity, MainActivity::class.java)
+                    startActivity(mainIntent)
+                    todoAddActivity.finish()
                 }
                 setTitle("할일 추가")
             }
@@ -154,7 +159,7 @@ class TodoAddFragment : Fragment() {
 
                     var bottomDialog = TodoAddBottomDialog()
                     bottomDialog.arguments = bundle
-                    bottomDialog.show(mainActivity.supportFragmentManager,"카테고리")
+                    bottomDialog.show(todoAddActivity.supportFragmentManager,"카테고리")
                 }
 
             }
@@ -183,7 +188,7 @@ class TodoAddFragment : Fragment() {
                         viewModel.date.value = dates
                     }
 
-                    materialDatePicker.show(mainActivity.supportFragmentManager,"Date")
+                    materialDatePicker.show(todoAddActivity.supportFragmentManager,"Date")
 
                 }
             }
@@ -247,7 +252,7 @@ class TodoAddFragment : Fragment() {
                                 }
                             }
                         }
-                        .show(mainActivity.supportFragmentManager,"Time")
+                        .show(todoAddActivity.supportFragmentManager,"Time")
 
                 }
             }
@@ -255,30 +260,23 @@ class TodoAddFragment : Fragment() {
             linearlayoutTodoAddLocation.run {
 
                 setOnClickListener {
-                    val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION // 또는 ACCESS_COARSE_LOCATION
-                    val requestCode = 123 // 요청 코드 (임의의 숫자)
+                    //구글맵 키 받아옴
+                    val key = com.test.dontforget.BuildConfig.googlemapkey
 
-                    if (ContextCompat.checkSelfPermission(requireContext(), locationPermission) == PackageManager.PERMISSION_GRANTED) {
-                        //구글맵 키 받아옴
-                        val key = com.test.dontforget.BuildConfig.googlemapkey
+                    // plac api 초기화
+                    Places.initialize(context,key)
+                    val placesClient = Places.createClient(todoAddActivity)
 
-                        // plac api 초기화
-                        Places.initialize(context,key)
-                        val placesClient = Places.createClient(mainActivity)
-
-                        val field = listOf(Place.Field.NAME,Place.Field.LAT_LNG,Place.Field.ADDRESS_COMPONENTS,Place.Field.TYPES,Place.Field.ADDRESS)
-                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,field)
-                            .setHint("주소를 입력해주세요")
-                            .build(mainActivity)
-                        startAutocomplete.launch(intent)
-
-
-                    } else {
-                        // 권한을 요청
-                        ActivityCompat.requestPermissions(requireActivity(), arrayOf(locationPermission), requestCode)
-                    }
-
-
+                    val field = listOf(
+                        Place.Field.NAME,
+                        Place.Field.LAT_LNG,
+                        Place.Field.ADDRESS_COMPONENTS,
+                        Place.Field.TYPES,
+                        Place.Field.ADDRESS)
+                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,field)
+                        .setHint("주소를 입력해주세요")
+                        .build(todoAddActivity)
+                    startAutocomplete.launch(intent)
                 }
 
             }
@@ -289,7 +287,7 @@ class TodoAddFragment : Fragment() {
                     //유효성 검사
                     if(editTextTodoAdd.text!!.isEmpty()){
                         var dialogNormalBinding = DialogNormalBinding.inflate(layoutInflater)
-                        val builder = MaterialAlertDialogBuilder(mainActivity)
+                        val builder = MaterialAlertDialogBuilder(todoAddActivity)
 
                         dialogNormalBinding.textViewDialogNormalTitle.text = "경고"
                         dialogNormalBinding.textViewDialogNormalContent.text = "할일을 입력해주세요."
@@ -299,14 +297,14 @@ class TodoAddFragment : Fragment() {
 
                         }
                         builder.setPositiveButton("확인"){dialogInterface: DialogInterface, i: Int ->
-                            mainActivity.showSoftInput(editTextTodoAdd)
+                            todoAddActivity.showSoftInput(editTextTodoAdd)
                         }
                         builder.show()
                         return@setOnClickListener
                     }
                     if(textViewTodoAddCategory.text.toString() == "카테고리 없음"){
                         var dialogNormalBinding = DialogNormalBinding.inflate(layoutInflater)
-                        val builder = MaterialAlertDialogBuilder(mainActivity)
+                        val builder = MaterialAlertDialogBuilder(todoAddActivity)
 
                         dialogNormalBinding.textViewDialogNormalTitle.text = "경고"
                         dialogNormalBinding.textViewDialogNormalContent.text = "카데고리를 선택해주세요."
@@ -323,7 +321,7 @@ class TodoAddFragment : Fragment() {
                     }
                     if(textViewTodoAddDate.text.toString() == "날짜 없음"){
                         var dialogNormalBinding = DialogNormalBinding.inflate(layoutInflater)
-                        val builder = MaterialAlertDialogBuilder(mainActivity)
+                        val builder = MaterialAlertDialogBuilder(todoAddActivity)
 
                         dialogNormalBinding.textViewDialogNormalTitle.text = "경고"
                         dialogNormalBinding.textViewDialogNormalContent.text = "날짜를 선택해주세요."
@@ -353,6 +351,7 @@ class TodoAddFragment : Fragment() {
                         var backgroundColor = MyApplication.categoryColor
                         var fontColor = MyApplication.categoryFontColor
                         var dates = newDate
+                        var memo = editTextTodoAddMemo.text.toString()
 
                         //알림, 장소 이름,위도,경도 없을시
                         var time = newTime
@@ -416,11 +415,14 @@ class TodoAddFragment : Fragment() {
                                     //개인 카테고리 추가시
                                     if(newPublicdata == 0){
                                         var newclass = TodoClass(idx, content, 0, catgoryIdx, name, fontColor.toLong(), backgroundColor.toLong(), dates,
-                                            time, locationName, locationLatitude, locationLongtitude, owneridx, ownerName)
+                                            time, locationName, locationLatitude, locationLongtitude, memo, owneridx, ownerName)
                                         TodoRepository.setTodoAddInfo(newclass){
                                             TodoRepository.setTodoIdx(idx){
-                                                Toast.makeText(mainActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()
-                                                mainActivity.removeFragment(MainActivity.TODO_ADD_FRAGMENT)
+                                                Toast.makeText(todoAddActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()
+
+                                                val mainIntent = Intent(todoAddActivity, MainActivity::class.java)
+                                                startActivity(mainIntent)
+                                                todoAddActivity.finish()
                                                 viewModel.resetList()
                                             }
                                         }
@@ -429,18 +431,22 @@ class TodoAddFragment : Fragment() {
                                     //공용 카데고리 추가시
                                     if(newPublicdata == 1){
                                         var newclass = TodoClass(idx, content, 0, catgoryIdx, name, fontColor.toLong(), backgroundColor.toLong(), dates,
-                                            time, locationName, locationLatitude, locationLongtitude, owneridx, ownerName)
+                                            time, locationName, locationLatitude, locationLongtitude, memo, owneridx, ownerName)
                                         TodoRepository.setTodoAddInfo(newclass) {
                                             TodoRepository.setTodoIdx(idx) {
-                                                var text = "${names}에 ${myDate} 새 할일이 추가되었습니다"
+                                                var alertName = "${names}에 ${myDate} "
+                                                var text = "새 할일이 추가되었습니다"
                                                 AlertRepository.getAlertIdx {
                                                     var idx = it.result.value as Long
                                                     idx++
-                                                    var newclass2 = AlertClass(idx, text, useridx, 2)
+                                                    var newclass2 = AlertClass(idx, text, useridx, 2,alertName)
                                                     AlertRepository.addAlertInfo(newclass2) {
                                                         AlertRepository.setAlertIdx(idx) {
-                                                            Toast.makeText(mainActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()
-                                                            mainActivity.removeFragment(MainActivity.TODO_ADD_FRAGMENT)
+                                                            Toast.makeText(todoAddActivity, "저장되었습니다", Toast.LENGTH_SHORT).show()
+
+                                                            val mainIntent = Intent(todoAddActivity, MainActivity::class.java)
+                                                            startActivity(mainIntent)
+                                                            todoAddActivity.finish()
                                                             viewModel.resetList()
                                                         }
                                                     }
@@ -460,11 +466,10 @@ class TodoAddFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.resetList()
-        mainActivity.replaceFragment(MainActivity.MAIN_FRAGMENT,false,null)
     }
 
     private fun setAlarm(alarmCode : Int, content : String, time : String){
-        alarmFunctions = AlarmFunctions(mainActivity)
+        alarmFunctions = AlarmFunctions(todoAddActivity)
         alarmFunctions.callAlarm(time, alarmCode, content)
     }
 }
