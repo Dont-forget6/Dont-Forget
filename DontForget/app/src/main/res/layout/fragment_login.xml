@@ -147,22 +147,22 @@
                 android:layout_height="@dimen/margin_vertical_big1">
             </Space>
 
-            <TextView
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/scdream_regular"
-                android:textSize="@dimen/font_size_medium"
-                android:text="간편로그인"/>
+<!--            <TextView-->
+<!--                android:gravity="center"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/scdream_regular"-->
+<!--                android:textSize="@dimen/font_size_medium"-->
+<!--                android:text="간편로그인"/>-->
 
-            <ImageButton
-                android:id="@+id/button_login_googleLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_vertical_small2"
-                android:backgroundTint="#00FFFFFF"
-                android:src="@drawable/drawable_google_resize" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/button_login_googleLogin"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="@dimen/margin_vertical_small2"-->
+<!--                android:backgroundTint="#00FFFFFF"-->
+<!--                android:src="@drawable/drawable_google_resize" />-->
 
 
         </LinearLayout>
