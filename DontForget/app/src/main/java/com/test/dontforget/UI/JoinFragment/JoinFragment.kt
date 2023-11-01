@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -72,32 +73,30 @@ class JoinFragment : Fragment() {
 
 
             // 입력 유효성 검사
-            textInputLayoutJoinEmail.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinEmail,"이메일")
-                }
+//            textInputLayoutJoinEmail.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+//                if (!hasFocus) {
+//                    checkBoolean = checkValidation(textInputLayoutJoinEmail,"이메일")
+//                }
+//            }
+            textInputLayoutJoinEmail.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinEmail,"이메일")
             }
-            textInputLayoutJoinPassword.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinPassword,"비밀번호")
-                }
+            textInputLayoutJoinPassword.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinPassword,"비밀번호")
             }
-            textInputLayoutJoinPasswordCheck.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinPasswordCheck,"비밀번호 확인")
-                }
+            textInputLayoutJoinPasswordCheck.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinPasswordCheck,"비밀번호 확인")
             }
-            textInputLayoutJoinName.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinName,"이름")
-                }
-            }
-            textInputLayoutJoinIntroduce.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    checkBoolean = checkValidation(textInputLayoutJoinIntroduce,"자기소개")
-                }
+            textInputLayoutJoinName.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinName,"이름")
             }
 
+            textInputLayoutJoinIntroduce.editText?.doAfterTextChanged {
+                checkBoolean = checkValidation(textInputLayoutJoinIntroduce,"자기소개")
+            }
+            textViewJoinTerms.setOnClickListener {
+                mainActivity.replaceFragment(MainActivity.JOIN_TERM_FRAGMENT,true,null)
+            }
             // 회원가입 버튼 클릭
             buttonJoin.setOnClickListener {
                 val email = textInputLayoutJoinEmail.editText?.text.toString()
@@ -110,32 +109,35 @@ class JoinFragment : Fragment() {
                 } else {
                     "image/img_${System.currentTimeMillis()}.jpg"
                 }
+                var checkTerm = checkBoxJoinTerms.isChecked
                 if (checkBoolean && userType == MyApplication.EMAIL_LOGIN) {
                     if (password == passwordCheck) {
-                        firebaseUtil.createAccount(email, password) { firebaseCheck ->
-                            var currentUser = firebaseAuth.currentUser
-                            var userId = currentUser?.uid
-                            if (firebaseCheck == "성공") {
-                                if (userId != null) {
-                                    makeUser(userName,email,userImage,userIntroduce,userId)
+                        if(checkTerm){
+                            firebaseUtil.createAccount(email, password) { firebaseCheck ->
+                                var currentUser = firebaseAuth.currentUser
+                                var userId = currentUser?.uid
+                                if (firebaseCheck == "성공") {
+                                    if (userId != null) {
+                                        makeUser(userName,email,userImage,userIntroduce,userId)
+                                    }
                                 }
-                            }
-                            // 이미 등록된 이메일일 경우
-                            else if(firebaseCheck.contains( "com.google.firebase.auth.FirebaseAuthUserCollisionException: The email address is already in use by another account.")) {
-                                val dialogNormalBinding =
-                                    DialogNormalBinding.inflate(layoutInflater)
-                                val builder = MaterialAlertDialogBuilder(mainActivity)
-                                dialogNormalBinding.textViewDialogNormalTitle.text = "중복확인"
-                                dialogNormalBinding.textViewDialogNormalContent.text = "이미 존재하는 이메일 입니다"
-                                builder.setView(dialogNormalBinding.root)
-                                mainActivity.hideKeyboard()
-                                builder.setPositiveButton("확인") { dialog, which ->
-                                    textInputEditTextJoinEmail.requestFocus()
+                                // 이미 등록된 이메일일 경우
+                                else if(firebaseCheck.contains( "com.google.firebase.auth.FirebaseAuthUserCollisionException: The email address is already in use by another account.")) {
+                                    val dialogNormalBinding =
+                                        DialogNormalBinding.inflate(layoutInflater)
+                                    val builder = MaterialAlertDialogBuilder(mainActivity)
+                                    dialogNormalBinding.textViewDialogNormalTitle.text = "중복확인"
+                                    dialogNormalBinding.textViewDialogNormalContent.text = "이미 존재하는 이메일 입니다"
+                                    builder.setView(dialogNormalBinding.root)
+                                    mainActivity.hideKeyboard()
+                                    builder.setPositiveButton("확인") { dialog, which ->
+                                        textInputEditTextJoinEmail.requestFocus()
+                                    }
+                                    builder.show()
                                 }
-                                builder.show()
                             }
                         }
-
+                        else Toast.makeText(requireContext(),"이용약관에 동의해주세요.",Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(requireContext(), "비밀번호가 서로 다릅니다.", Toast.LENGTH_SHORT).show()
                     }
@@ -144,7 +146,8 @@ class JoinFragment : Fragment() {
                     var userId = firebaseAuth.currentUser?.uid
 
                     if (userId != null) {
-                        makeUser(userName,email,userImage,userIntroduce,userId)
+                        if(checkTerm) makeUser(userName,email,userImage,userIntroduce,userId)
+                        else Toast.makeText(requireContext(),"이용약관에 동의해주세요.",Toast.LENGTH_SHORT).show()
                     }
                 }
                 else if(!checkBoolean){
@@ -195,13 +198,10 @@ class JoinFragment : Fragment() {
                 }
 
             }else if(type == "비밀번호" || type == "비밀번호 확인"){
-                val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]*\$".toRegex()
-                if(check.length < 6){
-                    textInputLayout.error = "6자리이상 입력해주세요."
-                }else if(!check.matches(passwordPattern)){
-                    textInputLayout.error = "6~16자의 영문 대/소문자, 숫자를 사용해 주세요."
-                }
-                else{
+                val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@#$%^&+=!]*\$"
+                if (check.length < 6 || !check.matches(passwordPattern.toRegex())) {
+                        textInputLayout.error = "6~16자의 영문 대/소문자, 숫자, 그리고 특수문자(@, #, $, %, ^, &, +, =, !) 중 2개를 조합해서 사용하세요."
+                } else {
                     textInputLayout.error = null
                     textInputLayout.isErrorEnabled = false
                     return true
@@ -216,6 +216,9 @@ class JoinFragment : Fragment() {
         }
         return false
     }
+
+
+
     // firebase Realtime에 추가
     fun makeUser(userName:String,userEmail:String,userImage:String,userIntroduce:String,userId:String){
         UserRepository.getUserInfo {

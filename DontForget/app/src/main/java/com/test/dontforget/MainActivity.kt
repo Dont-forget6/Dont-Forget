@@ -33,6 +33,7 @@ import com.test.dontforget.UI.CategoryOptionPublicFragment.CategoryOptionPublicF
 import com.test.dontforget.UI.CategoryOptionPublicOwnerFragment.CategoryOptionPublicOwnerFragment
 import com.test.dontforget.UI.FriendsDetailFragment.FriendsDetailFragment
 import com.test.dontforget.UI.JoinFragment.JoinFragment
+import com.test.dontforget.UI.JoinFragment.JoinTermFragment
 import com.test.dontforget.UI.LoginFindPwFragment.LoginFindPwFragment
 import com.test.dontforget.UI.LoginFragment.LoginFragment
 import com.test.dontforget.UI.MainFragment.MainFragment
@@ -142,6 +143,7 @@ class MainActivity : AppCompatActivity() {
         val CATEGORY_OPTION_PUBLIC_OWNER_FRAGMENT = "CategoryOptionPublicOwnerFragment"
         val FRIENDS_DETAIL_FRAGMENT = "FriendsDetailFragment"
         val JOIN_FRAGMENT = "JoinFragment"
+        val JOIN_TERM_FRAGMENT = "JoinTermFragment"
         val LOGIN_FIND_PW_FRAGMENT = "LoginFindPwFragment"
         val LOGIN_FRAGMENT = "LoginFragment"
         val MAIN_FRAGMENT = "MainFragment"
@@ -174,6 +176,7 @@ class MainActivity : AppCompatActivity() {
             CATEGORY_OPTION_PUBLIC_OWNER_FRAGMENT -> CategoryOptionPublicOwnerFragment()
             FRIENDS_DETAIL_FRAGMENT -> FriendsDetailFragment()
             JOIN_FRAGMENT -> JoinFragment()
+            JOIN_TERM_FRAGMENT -> JoinTermFragment()
             LOGIN_FIND_PW_FRAGMENT -> LoginFindPwFragment()
             LOGIN_FRAGMENT -> LoginFragment()
             MAIN_FRAGMENT -> MainFragment()

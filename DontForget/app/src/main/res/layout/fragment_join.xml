@@ -143,6 +143,24 @@
                     android:fontFamily="@font/scdream_regular"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <CheckBox
+                android:id="@+id/checkBox_join_Terms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/font_size_medium"
+                android:fontFamily="@font/scdream_regular"
+                android:text="이용약관 동의하기" />
+
+            <TextView
+                android:id="@+id/textView_join_Terms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/font_size_small"
+                android:fontFamily="@font/scdream_regular"
+                android:text="* 이용약관 확인하기"/>
+
             <Button
                 android:layout_marginTop="@dimen/margin_vertical_small2"
                 android:id="@+id/button_join"

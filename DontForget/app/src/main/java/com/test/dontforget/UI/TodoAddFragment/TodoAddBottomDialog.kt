@@ -20,7 +20,7 @@ import com.test.dontforget.databinding.RowDialogTodoAddBinding
 class TodoAddBottomDialog:BottomSheetDialogFragment() {
 
     lateinit var dialogTodoAddBinding: DialogTodoAddBinding
-    lateinit var mainActivity: MainActivity
+    lateinit var todoAddActivity: TodoAddActivity
     lateinit var viewModel: TodoAddFragmentViewModel
 
     var name:String = ""
@@ -30,9 +30,9 @@ class TodoAddBottomDialog:BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        mainActivity = activity as MainActivity
+        todoAddActivity = activity as TodoAddActivity
         dialogTodoAddBinding = DialogTodoAddBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(mainActivity).get(TodoAddFragmentViewModel::class.java)
+        viewModel = ViewModelProvider(todoAddActivity).get(TodoAddFragmentViewModel::class.java)
 
         //bundle로 받을 데이터
         name = arguments?.getString("category","개인")!!
@@ -40,7 +40,7 @@ class TodoAddBottomDialog:BottomSheetDialogFragment() {
         dialogTodoAddBinding.run {
             viewModel.getData()
             viewModel.run {
-                categoryInfo.observe(mainActivity){
+                categoryInfo.observe(todoAddActivity){
                     dialogTodoAddBinding.recyclerviewTodoAddBottom.adapter?.notifyDataSetChanged()
                 }
             }
