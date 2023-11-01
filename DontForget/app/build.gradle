@@ -17,8 +17,8 @@ android {
         applicationId "com.test.dontforget"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "3.0"
         buildConfigField "String", "SAMPLE_API_KEY", properties["google.map.key"]
         manifestPlaceholders = [googleMapApiKey:googleMapApiKey]
 
