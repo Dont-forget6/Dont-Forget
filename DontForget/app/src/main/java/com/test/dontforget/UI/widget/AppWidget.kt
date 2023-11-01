@@ -14,6 +14,7 @@ import com.test.dontforget.MainActivity
 import com.test.dontforget.MyApplication
 import com.test.dontforget.R
 import com.test.dontforget.Repository.TodoRepository
+import com.test.dontforget.UI.TodoAddFragment.TodoAddActivity
 
 /**
  * Implementation of App Widget functionality.
@@ -56,9 +57,7 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 fun getIntent(context: Context) : PendingIntent{
-    val pendingIntent: PendingIntent = Intent(context, MainActivity::class.java).let { intent ->
-//        MyApplication.isStartedWithWidget = true
-//        Log.d("!@#$%^&","글쓰기로 가기!")
+    val pendingIntent: PendingIntent = Intent(context, TodoAddActivity::class.java).let { intent ->
         PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
     return pendingIntent
