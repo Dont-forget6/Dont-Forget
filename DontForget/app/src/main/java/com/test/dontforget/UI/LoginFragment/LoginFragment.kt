@@ -91,17 +91,17 @@ class LoginFragment : Fragment() {
                 bundle.putString("UserEmail", null)
                 mainActivity.replaceFragment(MainActivity.LOGIN_FIND_PW_FRAGMENT,true,null)
             }
-            buttonLoginGoogleLogin.setOnClickListener {
-                firebaseAuth = FirebaseAuth.getInstance()
-                val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken("194726734690-sm7nu0e0cjr12r4cu39547d10l09rf0r.apps.googleusercontent.com") // 웹 클라이언트 ID
-                    .requestEmail() // 이메일 권한 요청 (선택 사항)
-                    .build()
-
-                val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
-                val signInIntent = googleSignInClient.signInIntent
-                startActivityForResult(signInIntent, 9001)
-            }
+//            buttonLoginGoogleLogin.setOnClickListener {
+//                firebaseAuth = FirebaseAuth.getInstance()
+//                val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                    .requestIdToken("194726734690-sm7nu0e0cjr12r4cu39547d10l09rf0r.apps.googleusercontent.com") // 웹 클라이언트 ID
+//                    .requestEmail() // 이메일 권한 요청 (선택 사항)
+//                    .build()
+//
+//                val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
+//                val signInIntent = googleSignInClient.signInIntent
+//                startActivityForResult(signInIntent, 9001)
+//            }
 
 
         }
