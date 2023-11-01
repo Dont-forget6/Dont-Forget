@@ -7,11 +7,11 @@
     android:theme="@style/Theme.DontForget.AppWidgetContainer">
 
     <ImageView
-        android:layout_gravity="center"
         android:id="@+id/appwidget_imageview"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:padding="10dp"
-        app:srcCompat="@drawable/ic_pencil" />
+        app:srcCompat="@drawable/ic_widget_512" />
 
 </LinearLayout>

@@ -5,10 +5,10 @@
     android:initialLayout="@layout/app_widget"
     android:minWidth="70dp"
     android:minHeight="40dp"
-    android:previewImage="@drawable/ic_pencil_64"
+    android:previewImage="@drawable/ic_widget"
     android:previewLayout="@layout/app_widget"
     android:resizeMode="none"
-    android:targetCellWidth="1"
+    android:targetCellWidth="2"
     android:targetCellHeight="1"
     android:updatePeriodMillis="86400000"
     android:widgetCategory="home_screen" />

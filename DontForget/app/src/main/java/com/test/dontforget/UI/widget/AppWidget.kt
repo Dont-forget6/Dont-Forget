@@ -49,7 +49,7 @@ class AppWidget : AppWidgetProvider() {
 
 fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     val views: RemoteViews = RemoteViews(context.packageName, R.layout.app_widget).apply {
-        setImageViewResource(R.id.appwidget_imageview, R.drawable.ic_pencil)
+        setImageViewResource(R.id.appwidget_imageview, R.drawable.ic_widget_512)
         setOnClickPendingIntent(R.id.ll_appwidget, getIntent(context))
     }
 
