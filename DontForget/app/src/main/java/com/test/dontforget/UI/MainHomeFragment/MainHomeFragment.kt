@@ -436,6 +436,7 @@ class MainHomeFragment : Fragment() {
         if (isMonthMode) {
             val month =
                 binding.calendarViewMainHomeFragment.findFirstVisibleMonth()?.yearMonth ?: return
+            nowMonth = month
             binding.headerContainer.headerYearTextView.text = "${month.year}년"
             binding.headerContainer.headerMonthTextView.text = "${month.month.value}월"
         } else {
